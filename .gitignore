@@ -6,5 +6,5 @@
 Thumbs.db
 ._*
 .~lock.*
-/composer.lock
+/composer.phar
 /composer.log
