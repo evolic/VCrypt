@@ -1,0 +1,10 @@
+/.settings
+/.buildpath
+/nbproject
+/vendor
+.DS_Store
+Thumbs.db
+._*
+.~lock.*
+/composer.lock
+/composer.log
