@@ -1,5 +1,5 @@
-Vigenère cipher for PHP
---------------------------------
+VCrypt - Vigenère cipher for PHP
+======
 The library provides tools, which allows to generate Vigenère table, encode and decode text.
 
 About the project
