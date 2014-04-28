@@ -2,6 +2,10 @@ VCrypt - Vigenère cipher for PHP
 ======
 The library provides tools, which allows to generate Vigenère table, encode and decode text.
 
+Master:
+[![Build Status](https://secure.travis-ci.org/evolic/VCrypt.png?branch=master)](http://travis-ci.org/evolic/VCrypt)
+[![Coverage Status](https://coveralls.io/repos/evolic/VCrypt/badge.png?branch=master)](https://coveralls.io/r/evolic/VCrypt)
+
 About the project
 --------------------------------
 The library was created as a core used to work with Kryptos (http://en.wikipedia.org/wiki/Kryptos),
