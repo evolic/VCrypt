@@ -13,7 +13,7 @@ before_script:
   - mkdir -p build/coverage
 
   # Run tests for the various components in parallel
-  - ls -d tests/ZendTest/* | parallel --gnu --keep-order 'echo "Running {} tests"; ./vendor/bin/phpunit -c tests/phpunit.xml.dist --coverage-php build/coverage/coverage-{/.}.cov {};' || exit 1
+  - ls -d tests/VCryptTest/* | parallel --gnu --keep-order 'echo "Running {} tests"; ./vendor/bin/phpunit -c tests/phpunit.xml.dist --coverage-php build/coverage/coverage-{/.}.cov {};' || exit 1
 
 after_script:
   # Merges the individual clover reports of each component into a single clover.xml
