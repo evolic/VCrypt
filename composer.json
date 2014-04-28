@@ -1,24 +1,25 @@
 {
-	"name" : "loculus/vcrypt",
-	"description" : "Vigenère cipher for PHP",
-	"keywords" : [
-		"Vigenère cipher",
-		"Vigenère square",
-		"Vigenère table",
-		"the tabula recta"
-	],
-	"homepage" : "https://github.com/loculus/vcrypt",
-	"license" : [
-		"BSD-3-Clause"
-	],
-	"require" : {
-		"php" : ">=5.3.23",
-		"firephp/firephp-core" : "dev-master",
-		"zendframework/zendframework" : ">=2.3"
-	},
-	"require-dev" : {
-		"phpunit/phpunit" : "~4.0"
-	},
+    "name" : "loculus/vcrypt",
+    "description" : "Vigenère cipher for PHP",
+    "keywords" : [
+        "Vigenère cipher",
+        "Vigenère square",
+        "Vigenère table",
+        "the tabula recta"
+    ],
+    "homepage" : "https://github.com/loculus/vcrypt",
+    "license" : [
+        "BSD-3-Clause"
+    ],
+    "require" : {
+        "php" : ">=5.3.23",
+        "firephp/firephp-core" : "dev-master",
+        "zendframework/zendframework" : ">=2.3"
+    },
+    "require-dev" : {
+        "phpunit/phpunit" : "~4.0",
+        "satooshi/php-coveralls": "dev-master"
+    },
     "autoload": {
         "psr-0": {
             "VCrypt\\": "library/"
