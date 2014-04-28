@@ -32,13 +32,14 @@
     }],
     "require" : {
         "php" : ">=5.3.23",
-        "firephp/firephp-core" : "dev-master",
         "zendframework/zendframework" : ">=2.3"
     },
     "require-dev" : {
+        "firephp/firephp-core" : "dev-master",
         "phpunit/phpunit" : "~4.0",
         "satooshi/php-coveralls": "dev-master",
-        "sebastianbergmann/phpcov": "1.1.0"
+        "sebastianbergmann/phpcov": "1.1.0",
+        "fabpot/php-cs-fixer": "dev-master"
     },
     "autoload": {
         "psr-0": {
