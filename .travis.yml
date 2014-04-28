@@ -5,6 +5,9 @@ php:
   - 5.4
   - hhvm
 
+before_install:
+  - rm composer.lock
+
 install:
   - sudo apt-get install parallel
   - composer install --dev --prefer-source
