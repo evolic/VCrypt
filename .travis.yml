@@ -17,16 +17,10 @@ before_script:
 
 script:
   - vendor/bin/php-cs-fixer fix -v --dry-run --config-file ./.php_cs
-  # Run tests for the various components in parallel
-#  - ls -d tests/VCryptTest/* | parallel --gnu --keep-order 'echo "Running {} tests"; ./vendor/bin/phpunit -c tests/phpunit.xml.dist --coverage-php build/coverage/coverage-{/.}.cov {};' || exit 1
-#  - ls -al build/coverage
   - php tests/run-tests.php --clover ../build/logs/clover.xml
 
 after_script:
   # Merges the individual clover reports of each component into a single clover.xml
-#  - php vendor/bin/phpcov.php --merge --clover build/logs/clover.xml --whitelist library build/coverage
-  - head -n 15 build/logs/clover.xml
-  - cat build/logs/clover.xml | wc -l
   - php vendor/bin/coveralls
 
 matrix:
