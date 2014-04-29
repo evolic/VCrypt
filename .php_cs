@@ -16,10 +16,10 @@ $config->fixers(
         'short_tag',
         'visibility',
         'php_closing_tag',
-        'braces',
+//        'braces',
         'function_declaration',
         'psr0',
-        'elseif',
+//        'elseif',
         'eof_ending',
         'unused_use',
     )
