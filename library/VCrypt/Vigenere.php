@@ -83,10 +83,12 @@ class Vigenere
     public function loadTable($file)
     {
         $handle = @fopen($file, "r");
+
         if ($handle) {
             $this->reset();
 
             $idx = 0;
+
             while (!feof($handle)) {
                 $buffer = rtrim(fgets($handle, 4096));
 
@@ -186,6 +188,7 @@ class Vigenere
             }
 
             $j++;
+
             if ($j == $limit) {
                 $j = $j % $limit;
             }
@@ -250,9 +253,11 @@ class Vigenere
         }
 
         $key = '';
+
         for ($i=0; $i<$elen; $i++) {
             $ech = strtoupper($encrypted[$i]);
             $dch = strtoupper($decrypted[$i]);
+
             if (array_key_exists($dch, $this->mapping)) {
                 $col = $this->mapping[$dch];
 
