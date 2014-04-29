@@ -6,7 +6,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
         }
     })
     ->in(__DIR__ . '/library')
-    ->in(__DIR__ . '/tests')
+    ->in(__DIR__ . '/tests/VCryptTest')
     ;
 $config = Symfony\CS\Config\Config::create();
 $config->fixers(
