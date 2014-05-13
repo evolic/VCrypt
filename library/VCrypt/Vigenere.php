@@ -48,17 +48,29 @@ class Vigenere
      */
     protected $key;
 
+    /**
+     * Specifies if cipher is case sensitive
+     * @var bool
+     */
+    protected $caseSensitive = false;
+
 
     /**
      * Constructor
      *
-     * @param string $key
+     * @param array $options
      * @return void
      */
-    public function __construct($key)
+    public function __construct($options = array())
     {
         $this->reset();
-        $this->setKey($key);
+
+        if (array_key_exists('case-sensitive', $options)) {
+            $this->setCaseSensitive((bool) $options['case-sensitive']);
+        }
+        if (array_key_exists('key', $options)) {
+            $this->setKey($options['key']);
+        }
     }
 
     /**
@@ -148,12 +160,39 @@ class Vigenere
      * Sets a secret key
      *
      * @param string $key Secret key used for data encryption
-     * @return Kryptos
+     * @return Vigenere
      */
     public function setKey($key)
     {
-        $this->key = strtoupper($key);
+        if ($this->getCaseSensitive()) {
+            $this->key = $key;
+        } else {
+            $this->key = strtoupper($key);
+        }
+
         return $this;
+    }
+
+    /**
+     * Sets if cipher is case sensitive or not
+     *
+     * @param bool $caseSensitive
+     * @return Vigenere
+     */
+    public function setCaseSensitive($caseSensitive)
+    {
+        $this->caseSensitive = $caseSensitive;
+        return $this;
+    }
+
+    /**
+     * Gets if cipher is case sensitive or not
+     *
+     * @return bool
+     */
+    public function getCaseSensitive()
+    {
+        return $this->caseSensitive;
     }
 
     /**
@@ -175,14 +214,29 @@ class Vigenere
         $j = 0;
 
         for ($i=0; $i<strlen($text); $i++) {
-            $ch = strtoupper($text[$i]);
+            if ($this->getCaseSensitive()) {
+                $ch1 = $text[$i];
+            } else {
+                $ch1 = strtoupper($text[$i]);
+            }
 
-            if (array_key_exists($ch, $this->mapping)) {
-                $col = $this->mapping[$ch];
-                $row = $this->mapping[$key[$j]];
+            if (array_key_exists($ch1, $this->mapping)) {
+                $col = $this->mapping[$ch1];
+
+                if ($this->getCaseSensitive()) {
+                  $ch2 = $key[$j];
+                } else {
+                  $ch2 = strtoupper($key[$j]);
+                }
+
+                $row = $this->mapping[$ch2];
                 $encoded .= $this->table[$col][$row];
             } else {
-                $encoded .= strtoupper($text[$i]);
+                if ($this->getCaseSensitive()) {
+                    $encoded .= $text[$i];
+                } else {
+                    $encoded .= strtoupper($text[$i]);
+                }
                 // key is not used for characters not present in the table
                 continue;
             }
@@ -226,7 +280,11 @@ class Vigenere
 
         // get reverse key
         for ($i=0; $i<strlen($this->key); $i++) {
-            $kch = strtoupper($this->key[$i]);
+            if ($this->getCaseSensitive()) {
+                $kch = $this->key[$i];
+            } else {
+                $kch = strtoupper($this->key[$i]);
+            }
             $pos = $this->mapping[$kch] + $offset;
             $nr = ($limit - $pos + $up) % $limit;
             $key .= $this->table[0][$nr];

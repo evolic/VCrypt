@@ -52,7 +52,8 @@ class KryptosTest extends \PHPUnit_Framework_TestCase
      */
     public function testEncodeUsingKryptosTable($key, $data, $output)
     {
-        $cipher = new Vigenere($key);
+        $cipher = new Vigenere();
+        $cipher->setKey($key);
         $cipher->loadTable($this->table);
 
         $encoded = $cipher->encode($data);
@@ -81,7 +82,8 @@ class KryptosTest extends \PHPUnit_Framework_TestCase
      */
     public function testDncodeUsingVigenereTable($key, $data, $output)
     {
-        $cipher = new Vigenere($key);
+        $cipher = new Vigenere();
+        $cipher->setKey($key);
         $cipher->loadTable($this->table);
 
         $decoded = $cipher->decode($data);
@@ -110,7 +112,8 @@ class KryptosTest extends \PHPUnit_Framework_TestCase
      */
     public function testReadingKeyFromEncodedAndDecodedPhrasesUsingKryptosTableData($key, $decrypted, $encrypted)
     {
-        $cipher = new Vigenere($key);
+        $cipher = new Vigenere();
+        $cipher->setKey($key);
         $cipher->loadTable($this->table);
 
         $decodedKey = $cipher->readKey($encrypted, $decrypted);
@@ -120,7 +123,8 @@ class KryptosTest extends \PHPUnit_Framework_TestCase
     public function testPhrasesLengthMismatch()
     {
         $key = 'PALIMPSEST';
-        $cipher = new Vigenere($key);
+        $cipher = new Vigenere();
+        $cipher->setKey($key);
         $cipher->loadTable($this->table);
 
         $decrypted = 'BETWEENSUBTLESHADINGANDTHEABSENCEOFLIGHTLIESTHENUANCEOFIQLUSION?';

@@ -44,7 +44,8 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
     public function testEncodeUsingVigenereTable($data, $printText)
     {
         $key = 'LEMON';
-        $cipher = new Vigenere($key);
+        $options = array('key' => $key);
+        $cipher  = new Vigenere($options);
         $cipher->loadTable($this->table);
 
         $encoded = $cipher->encode($data);
@@ -65,7 +66,8 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
     public function testDncodeUsingVigenereTable($data, $printText)
     {
         $key = 'LEMON';
-        $cipher = new Vigenere($key);
+        $options = array('key' => $key);
+        $cipher  = new Vigenere($options);
         $cipher->loadTable($this->table);
 
         $decoded = $cipher->decode($data);
@@ -75,7 +77,8 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
     public function testReadingKeyFromEncodedAndDecodedPhrases()
     {
         $key = 'LEMON';
-        $cipher = new Vigenere($key);
+        $options = array('key' => $key);
+        $cipher  = new Vigenere($options);
         $cipher->loadTable($this->table);
 
         $decrypted = 'ATTACKATDAWN';
@@ -88,7 +91,8 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
     public function testPhrasesLengthMismatch()
     {
         $key = 'LEMON';
-        $cipher = new Vigenere($key);
+        $options = array('key' => $key);
+        $cipher  = new Vigenere($options);
         $cipher->loadTable($this->table);
 
         $decrypted = 'ATTACKATDAWNX';
@@ -141,7 +145,8 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
 
         $key = 'LEMON';
 
-        $cipher = new Vigenere($key);
+        $options = array('key' => $key);
+        $cipher  = new Vigenere($options);
         $cipher->loadTable($this->table);
         $cipher->printTable(false, $stub); // prints lines with Vigenere table
     }
