@@ -93,21 +93,21 @@ if ($run_as == 'groups') {
     echo "\n\n";
 } else {
     if (!$coverage) {
-	    foreach ($components as $component) {
-	        $component =   'VCryptTest/' . basename(str_replace('_', '/', $component));
-	        echo "$component:\n";
-	        system("$phpunit_bin $phpunit_opts $phpunit_coverage " . escapeshellarg(__DIR__ . '/' . $component), $c_result);
-	        echo "\n\n";
-	        if ($c_result) {
-	            $result = $c_result;
-	        }
-	    }
+        foreach ($components as $component) {
+            $component =   'VCryptTest/' . basename(str_replace('_', '/', $component));
+            echo "$component:\n";
+            system("$phpunit_bin $phpunit_opts $phpunit_coverage " . escapeshellarg(__DIR__ . '/' . $component), $c_result);
+            echo "\n\n";
+            if ($c_result) {
+                $result = $c_result;
+            }
+        }
     } else {
-    	system("$phpunit_bin $phpunit_opts $phpunit_coverage", $c_result);
-    	echo "\n\n";
-    	if ($c_result) {
-    		$result = $c_result;
-    	}
+        system("$phpunit_bin $phpunit_opts $phpunit_coverage", $c_result);
+        echo "\n\n";
+        if ($c_result) {
+            $result = $c_result;
+        }
     }
 }
 
