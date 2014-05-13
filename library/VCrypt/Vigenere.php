@@ -304,7 +304,7 @@ class Vigenere
      */
     public function readKey($encrypted, $decrypted)
     {
-        if (($elen = strlen($encrypted)) !== ($dlen = strlen($decrypted))) {
+        if (($elen = mb_strlen($encrypted, 'utf-8')) !== ($dlen = mb_strlen($decrypted, 'utf-8'))) {
             throw new \Exception(
                 'Texts cannot be processed because of strings length mismatch!',
                 self::EXCEPTION_CODE_STRINGS_LENGTH_MISMATCH
@@ -314,8 +314,13 @@ class Vigenere
         $key = '';
 
         for ($i=0; $i<$elen; $i++) {
-            $ech = strtoupper($encrypted[$i]);
-            $dch = strtoupper($decrypted[$i]);
+            $ech = mb_substr($encrypted, $i, 1, 'utf-8');
+            $dch = mb_substr($decrypted, $i, 1, 'utf-8');
+
+            if (!$this->getCaseSensitive()) {
+                $ech = mb_strtoupper($ech, 'utf-8');
+                $dch = mb_strtoupper($dch, 'utf-8');
+            }
 
             if (array_key_exists($dch, $this->mapping)) {
                 $col = $this->mapping[$dch];
@@ -346,22 +351,22 @@ class Vigenere
     {
         $key = '';
         $keyLength = 1;
-        $textLength = strlen($text);
+        $textLength = mb_strlen($text, 'utf-8');
 
         do {
             $valid = true;
             $idx = 0;
 
-            $key = substr($text, 0, $keyLength);
+            $key = mb_substr($text, 0, $keyLength, 'utf-8');
 
             do {
-                $string = substr($text, $idx, $keyLength);
-                $stringLength = strlen($string);
+                $string = mb_substr($text, $idx, $keyLength, 'utf-8');
+                $stringLength = mb_strlen($string, 'utf-8');
 
                 if ($keyLength === $stringLength && $key !== $string) {
                     $valid = false;
                     break;
-                } else if ($keyLength !== $stringLength && substr($key, 0, $stringLength) !== $string) {
+                } else if ($keyLength !== $stringLength && mb_substr($key, 0, $stringLength, 'utf-8') !== $string) {
                     // last string can be shorter than the key
                     $valid = false;
                     break;

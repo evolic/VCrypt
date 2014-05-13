@@ -36,8 +36,8 @@ class Utf8Test extends \PHPUnit_Framework_TestCase
         return array(
             array(
                 'fea42øÇż4óDea45èea4',
-                'c1żb2dfe4óøc6bD54',
-                '3e3e3bc77øè2fe1øż'
+                'c1żb2dfe4óøc6bD54dc15FEAR',
+                '3e3e3bc77øè2fe1øżøffèFEAR'
             ),
         );
     }
@@ -49,11 +49,40 @@ class Utf8Test extends \PHPUnit_Framework_TestCase
     {
         // always set case sensitive first!
         $options = array('case-sensitive' => true);
+
         $cipher = new Vigenere($options);
         $cipher->setKey($key);
         $cipher->loadTable($this->table);
 
         $encoded = $cipher->encode($data);
         $this->assertEquals($output, $encoded);
+    }
+
+    // Vigenère cipher decoding keys tests
+    public function provideReadingKeyFromEncodedAndDecodedPhrasesUsingUtf8TableData()
+    {
+        return array(
+            array(
+                'fea42øÇż4óDea45èea4',
+                'c1żb2dfe4óøc6bD54dc15FEAR',
+                '3e3e3bc77øè2fe1øżøffèFEAR'
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider provideReadingKeyFromEncodedAndDecodedPhrasesUsingUtf8TableData
+     */
+    public function testReadingKeyFromEncodedAndDecodedPhrasesUsingUtf8TableData($key, $decrypted, $encrypted)
+    {
+        // always set case sensitive first!
+        $options = array('case-sensitive' => true);
+
+        $cipher = new Vigenere($options);
+        $cipher->setKey($key);
+        $cipher->loadTable($this->table);
+
+        $decodedKey = $cipher->readKey($encrypted, $decrypted);
+        $this->assertEquals($key, $decodedKey);
     }
 }
