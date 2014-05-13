@@ -105,8 +105,8 @@ class Vigenere
                 $buffer = rtrim(fgets($handle, 4096));
 
                 if ($idx == 0) {
-                    for ($i=0; $i<strlen($buffer); $i++) {
-                        $char = $buffer[$i];
+                    for ($i=0; $i<mb_strlen($buffer, 'utf-8'); $i++) {
+                        $char = mb_substr($buffer, $i, 1, 'utf-8');
                         if (!array_key_exists($char, $this->mapping)) {
                             $this->mapping[$char] = $i;
                         }
@@ -114,10 +114,10 @@ class Vigenere
                         $this->table[0][$i] = $char;
                     }
                 } else {
-                    $char = $buffer[0];
+                    $char = mb_substr($buffer, 0, 1, 'utf-8');
                     $col = $this->mapping[$char];
-                    for ($i=0; $i<strlen($buffer); $i++) {
-                        $this->table[$col][$i] = $buffer[$i];
+                    for ($i=0; $i<mb_strlen($buffer, 'utf-8'); $i++) {
+                        $this->table[$col][$i] = mb_substr($buffer, $i, 1, 'utf-8');
                     }
                 }
 
@@ -167,7 +167,7 @@ class Vigenere
         if ($this->getCaseSensitive()) {
             $this->key = $key;
         } else {
-            $this->key = strtoupper($key);
+            $this->key = mb_strtoupper($key, 'utf-8');
         }
 
         return $this;
@@ -210,33 +210,34 @@ class Vigenere
 
         $encoded = '';
 
-        $limit = strlen($key);
+        $limit = mb_strlen($key, 'utf-8');
         $j = 0;
 
-        for ($i=0; $i<strlen($text); $i++) {
-            if ($this->getCaseSensitive()) {
-                $ch1 = $text[$i];
-            } else {
-                $ch1 = strtoupper($text[$i]);
+        for ($i=0; $i<mb_strlen($text, 'utf-8'); $i++) {
+            $ch1 = mb_substr($text, $i, 1, 'utf-8');
+            if (!$this->getCaseSensitive()) {
+                $ch1 = mb_strtoupper($ch1, 'utf-8');
             }
 
             if (array_key_exists($ch1, $this->mapping)) {
                 $col = $this->mapping[$ch1];
 
-                if ($this->getCaseSensitive()) {
-                  $ch2 = $key[$j];
-                } else {
-                  $ch2 = strtoupper($key[$j]);
+                $ch2 = mb_substr($key, $j, 1, 'utf-8');
+                if (!$this->getCaseSensitive()) {
+                    $ch2 = mb_strtoupper($ch2, 'utf-8');
                 }
 
                 $row = $this->mapping[$ch2];
                 $encoded .= $this->table[$col][$row];
             } else {
+                $ch = mb_substr($text, $i, 1, 'utf-8');
+
                 if ($this->getCaseSensitive()) {
-                    $encoded .= $text[$i];
+                    $encoded .= $ch;
                 } else {
-                    $encoded .= strtoupper($text[$i]);
+                    $encoded .= mb_strtoupper($ch, 'utf-8');
                 }
+
                 // key is not used for characters not present in the table
                 continue;
             }
@@ -279,11 +280,11 @@ class Vigenere
         $offset = 0;
 
         // get reverse key
-        for ($i=0; $i<strlen($this->key); $i++) {
+        for ($i=0; $i<mb_strlen($this->key, 'utf-8'); $i++) {
             if ($this->getCaseSensitive()) {
-                $kch = $this->key[$i];
+                $kch = mb_substr($this->key, $i, 1, 'utf-8');
             } else {
-                $kch = strtoupper($this->key[$i]);
+                $kch = mb_strtoupper(mb_substr($this->key, $i, 1, 'utf-8'), 'utf-8');
             }
             $pos = $this->mapping[$kch] + $offset;
             $nr = ($limit - $pos + $up) % $limit;
