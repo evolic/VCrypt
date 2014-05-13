@@ -47,9 +47,9 @@ class Utf8Test extends \PHPUnit_Framework_TestCase
      */
     public function testEncodeUsingUtf8Table($key, $data, $output)
     {
-        $cipher = new Vigenere();
         // always set case sensitive first!
-        $cipher->setCaseSensitive(true);
+        $options = array('case-sensitive' => true);
+        $cipher = new Vigenere($options);
         $cipher->setKey($key);
         $cipher->loadTable($this->table);
 
