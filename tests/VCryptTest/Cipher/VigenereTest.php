@@ -7,9 +7,9 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace VCryptTest\VCrypt;
+namespace VCryptTest\Cipher;
 
-use VCrypt\Vigenere;
+use VCrypt\Cipher\VigenereCipher;
 
 /**
  * Outside the Internal Function tests, tests do not distinguish between hash and mhash
@@ -27,7 +27,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->table = __DIR__ . '/../_files/tableau-vigenere.txt';
+        $this->table = __DIR__ . '/../../_files/tableau-vigenere.txt';
     }
 
     // Vigenère cipher encoding tests
@@ -45,7 +45,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
     {
         $key = 'LEMON';
         $options = array('key' => $key);
-        $cipher  = new Vigenere($options);
+        $cipher  = new VigenereCipher($options);
         $cipher->loadTable($this->table);
 
         $encoded = $cipher->encode($data);
@@ -67,7 +67,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
     {
         $key = 'LEMON';
         $options = array('key' => $key);
-        $cipher  = new Vigenere($options);
+        $cipher  = new VigenereCipher($options);
         $cipher->loadTable($this->table);
 
         $decoded = $cipher->decode($data);
@@ -78,7 +78,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
     {
         $key = 'LEMON';
         $options = array('key' => $key);
-        $cipher  = new Vigenere($options);
+        $cipher  = new VigenereCipher($options);
         $cipher->loadTable($this->table);
 
         $decrypted = 'ATTACKATDAWN';
@@ -92,7 +92,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
     {
         $key = 'LEMON';
         $options = array('key' => $key);
-        $cipher  = new Vigenere($options);
+        $cipher  = new VigenereCipher($options);
         $cipher->loadTable($this->table);
 
         $decrypted = 'ATTACKATDAWNX';
@@ -146,7 +146,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
         $key = 'LEMON';
 
         $options = array('key' => $key);
-        $cipher  = new Vigenere($options);
+        $cipher  = new VigenereCipher($options);
         $cipher->loadTable($this->table);
         $cipher->printTable(false, $stub); // prints lines with Vigenere table
     }

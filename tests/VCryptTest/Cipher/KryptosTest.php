@@ -7,9 +7,9 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace VCryptTest\VCrypt;
+namespace VCryptTest\Cipher;
 
-use VCrypt\Vigenere;
+use VCrypt\Cipher\VigenereCipher;
 
 /**
  * Outside the Internal Function tests, tests do not distinguish between hash and mhash
@@ -27,7 +27,7 @@ class KryptosTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->table = __DIR__ . '/../_files/tableau-kryptos.txt';
+        $this->table = __DIR__ . '/../../_files/tableau-kryptos.txt';
     }
 
     // Vigenère cipher encoding tests
@@ -52,7 +52,7 @@ class KryptosTest extends \PHPUnit_Framework_TestCase
      */
     public function testEncodeUsingKryptosTable($key, $data, $output)
     {
-        $cipher = new Vigenere();
+        $cipher = new VigenereCipher();
         $cipher->setKey($key);
         $cipher->loadTable($this->table);
 
@@ -82,7 +82,7 @@ class KryptosTest extends \PHPUnit_Framework_TestCase
      */
     public function testDncodeUsingVigenereTable($key, $data, $output)
     {
-        $cipher = new Vigenere();
+        $cipher = new VigenereCipher();
         $cipher->setKey($key);
         $cipher->loadTable($this->table);
 
@@ -112,7 +112,7 @@ class KryptosTest extends \PHPUnit_Framework_TestCase
      */
     public function testReadingKeyFromEncodedAndDecodedPhrasesUsingKryptosTableData($key, $decrypted, $encrypted)
     {
-        $cipher = new Vigenere();
+        $cipher = new VigenereCipher();
         $cipher->setKey($key);
         $cipher->loadTable($this->table);
 
@@ -123,7 +123,7 @@ class KryptosTest extends \PHPUnit_Framework_TestCase
     public function testPhrasesLengthMismatch()
     {
         $key = 'PALIMPSEST';
-        $cipher = new Vigenere();
+        $cipher = new VigenereCipher();
         $cipher->setKey($key);
         $cipher->loadTable($this->table);
 

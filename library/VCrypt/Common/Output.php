@@ -8,7 +8,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace VCrypt;
+namespace VCrypt\Common;
 
 /**
  * Class used to output text to the stdout

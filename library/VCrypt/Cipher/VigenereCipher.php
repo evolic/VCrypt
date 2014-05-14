@@ -8,7 +8,10 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace VCrypt;
+namespace VCrypt\Cipher;
+
+
+use VCrypt\Common\Output;
 
 /**
  * Vigenère cipher class
@@ -18,7 +21,7 @@ namespace VCrypt;
  * @copyright  (C) 2011-2014 Tomasz Kuter Loculus Evolution
  * @see http://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
  */
-class Vigenere
+class VigenereCipher
 {
     /**
      * Exception code thrown while getting the encryption key from encrypted and decrypted text

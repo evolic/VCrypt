@@ -7,9 +7,9 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace VCryptTest\VCrypt;
+namespace VCryptTest\Cipher;
 
-use VCrypt\Vigenere;
+use VCrypt\Cipher\VigenereCipher;
 
 /**
  * Outside the Internal Function tests, tests do not distinguish between hash and mhash
@@ -27,7 +27,7 @@ class CaseSensitiveTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->table = __DIR__ . '/../_files/tableau-case-sensitive.txt';
+        $this->table = __DIR__ . '/../../_files/tableau-case-sensitive.txt';
     }
 
     // Vigenère cipher encoding tests
@@ -47,7 +47,7 @@ class CaseSensitiveTest extends \PHPUnit_Framework_TestCase
      */
     public function testEncodeUsingCaseSensitiveTable($key, $data, $output)
     {
-        $cipher = new Vigenere();
+        $cipher = new VigenereCipher();
         // always set case sensitive first!
         $cipher->setCaseSensitive(true);
         $cipher->setKey($key);
