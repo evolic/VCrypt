@@ -109,6 +109,7 @@ class VigenereCipher
 
                 if ($idx == 0) {
                     for ($i=0; $i<mb_strlen($buffer, 'utf-8'); $i++) {
+                        // $char = $buffer[$i]
                         $char = mb_substr($buffer, $i, 1, 'utf-8');
                         if (!array_key_exists($char, $this->mapping)) {
                             $this->mapping[$char] = $i;
@@ -117,9 +118,11 @@ class VigenereCipher
                         $this->table[0][$i] = $char;
                     }
                 } else {
+                    // $char = $buffer[0]
                     $char = mb_substr($buffer, 0, 1, 'utf-8');
                     $col = $this->mapping[$char];
                     for ($i=0; $i<mb_strlen($buffer, 'utf-8'); $i++) {
+                        // $this->table[$col][$i] = $buffer[$i]
                         $this->table[$col][$i] = mb_substr($buffer, $i, 1, 'utf-8');
                     }
                 }
@@ -217,6 +220,7 @@ class VigenereCipher
         $j = 0;
 
         for ($i=0; $i<mb_strlen($text, 'utf-8'); $i++) {
+            // $ch1 = $text[$i]
             $ch1 = mb_substr($text, $i, 1, 'utf-8');
             if (!$this->getCaseSensitive()) {
                 $ch1 = mb_strtoupper($ch1, 'utf-8');
@@ -225,6 +229,7 @@ class VigenereCipher
             if (array_key_exists($ch1, $this->mapping)) {
                 $col = $this->mapping[$ch1];
 
+                // $ch2 = $key[$j]
                 $ch2 = mb_substr($key, $j, 1, 'utf-8');
                 if (!$this->getCaseSensitive()) {
                     $ch2 = mb_strtoupper($ch2, 'utf-8');
@@ -233,6 +238,7 @@ class VigenereCipher
                 $row = $this->mapping[$ch2];
                 $encoded .= $this->table[$col][$row];
             } else {
+                // $ch = $text[$i]
                 $ch = mb_substr($text, $i, 1, 'utf-8');
 
                 if ($this->getCaseSensitive()) {
@@ -284,10 +290,10 @@ class VigenereCipher
 
         // get reverse key
         for ($i=0; $i<mb_strlen($this->key, 'utf-8'); $i++) {
-            if ($this->getCaseSensitive()) {
-                $kch = mb_substr($this->key, $i, 1, 'utf-8');
-            } else {
-                $kch = mb_strtoupper(mb_substr($this->key, $i, 1, 'utf-8'), 'utf-8');
+            // $kch = $this->key[$i]
+            $kch = mb_substr($this->key, $i, 1, 'utf-8');
+            if (!$this->getCaseSensitive()) {
+                $kch = mb_strtoupper($kch, 'utf-8');
             }
             $pos = $this->mapping[$kch] + $offset;
             $nr = ($limit - $pos + $up) % $limit;
