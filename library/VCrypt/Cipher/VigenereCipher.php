@@ -137,26 +137,41 @@ class VigenereCipher
      * Prints Vigenère table, known as the tabula recta
      * Function mostly for the debugging purpose
      *
+     * @see http://rumkin.com/tools/cipher/vigenere-keyed.php Show tableau
+     * @param int  $charsInColumn
+     * @param Output $output
      * @return void
      */
-    public function printTable($printWithSpaces = false, $output = null)
+    public function printTable($charsInColumn = 4, $output = null)
     {
-        $space = $printWithSpaces ? ' ' : '';
-
         if (!isset($output)) {
             $output = new Output();
         }
 
+        $idx = 0;
+
         foreach ($this->table as $col => $rows) {
             $line = '';
 
+            $chars = -1;
+
             foreach ($rows as $row => $char) {
-                $line .= $space . $char;
+                if ($chars === 0) {
+                    $line .= ' |';
+                }
+                if ($chars % $charsInColumn === 0) {
+                    $line .= ' ';
+                }
+
+                $line .= $char;
+                $chars++;
             }
 
             $line .=  PHP_EOL;
 
             $output->printText($line);
+
+            $idx++;
         }
 
         $output->printText(PHP_EOL);

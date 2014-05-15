@@ -110,33 +110,33 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
         $stub = $this->getMock('Output', array('printText'));
 
         $table = array(
-            " ABCDEFGHIJKLMNOPQRSTUVWXYZ" . PHP_EOL,
-            "AABCDEFGHIJKLMNOPQRSTUVWXYZA" . PHP_EOL,
-            "BBCDEFGHIJKLMNOPQRSTUVWXYZAB" . PHP_EOL,
-            "CCDEFGHIJKLMNOPQRSTUVWXYZABC" . PHP_EOL,
-            "DDEFGHIJKLMNOPQRSTUVWXYZABCD" . PHP_EOL,
-            "EEFGHIJKLMNOPQRSTUVWXYZABCDE" . PHP_EOL,
-            "FFGHIJKLMNOPQRSTUVWXYZABCDEF" . PHP_EOL,
-            "GGHIJKLMNOPQRSTUVWXYZABCDEFG" . PHP_EOL,
-            "HHIJKLMNOPQRSTUVWXYZABCDEFGH" . PHP_EOL,
-            "IIJKLMNOPQRSTUVWXYZABCDEFGHI" . PHP_EOL,
-            "JJKLMNOPQRSTUVWXYZABCDEFGHIJ" . PHP_EOL,
-            "KKLMNOPQRSTUVWXYZABCDEFGHIJK" . PHP_EOL,
-            "LLMNOPQRSTUVWXYZABCDEFGHIJKL" . PHP_EOL,
-            "MMNOPQRSTUVWXYZABCDEFGHIJKLM" . PHP_EOL,
-            "NNOPQRSTUVWXYZABCDEFGHIJKLMN" . PHP_EOL,
-            "OOPQRSTUVWXYZABCDEFGHIJKLMNO" . PHP_EOL,
-            "PPQRSTUVWXYZABCDEFGHIJKLMNOP" . PHP_EOL,
-            "QQRSTUVWXYZABCDEFGHIJKLMNOPQ" . PHP_EOL,
-            "RRSTUVWXYZABCDEFGHIJKLMNOPQR" . PHP_EOL,
-            "SSTUVWXYZABCDEFGHIJKLMNOPQRS" . PHP_EOL,
-            "TTUVWXYZABCDEFGHIJKLMNOPQRST" . PHP_EOL,
-            "UUVWXYZABCDEFGHIJKLMNOPQRSTU" . PHP_EOL,
-            "VVWXYZABCDEFGHIJKLMNOPQRSTUV" . PHP_EOL,
-            "WWXYZABCDEFGHIJKLMNOPQRSTUVW" . PHP_EOL,
-            "XXYZABCDEFGHIJKLMNOPQRSTUVWX" . PHP_EOL,
-            "YYZABCDEFGHIJKLMNOPQRSTUVWXY" . PHP_EOL,
-            "ZZABCDEFGHIJKLMNOPQRSTUVWXYZ" . PHP_EOL
+            "  | ABCD EFGH IJKL MNOP QRST UVWX YZ" . PHP_EOL,
+            "A | ABCD EFGH IJKL MNOP QRST UVWX YZA" . PHP_EOL,
+            "B | BCDE FGHI JKLM NOPQ RSTU VWXY ZAB" . PHP_EOL,
+            "C | CDEF GHIJ KLMN OPQR STUV WXYZ ABC" . PHP_EOL,
+            "D | DEFG HIJK LMNO PQRS TUVW XYZA BCD" . PHP_EOL,
+            "E | EFGH IJKL MNOP QRST UVWX YZAB CDE" . PHP_EOL,
+            "F | FGHI JKLM NOPQ RSTU VWXY ZABC DEF" . PHP_EOL,
+            "G | GHIJ KLMN OPQR STUV WXYZ ABCD EFG" . PHP_EOL,
+            "H | HIJK LMNO PQRS TUVW XYZA BCDE FGH" . PHP_EOL,
+            "I | IJKL MNOP QRST UVWX YZAB CDEF GHI" . PHP_EOL,
+            "J | JKLM NOPQ RSTU VWXY ZABC DEFG HIJ" . PHP_EOL,
+            "K | KLMN OPQR STUV WXYZ ABCD EFGH IJK" . PHP_EOL,
+            "L | LMNO PQRS TUVW XYZA BCDE FGHI JKL" . PHP_EOL,
+            "M | MNOP QRST UVWX YZAB CDEF GHIJ KLM" . PHP_EOL,
+            "N | NOPQ RSTU VWXY ZABC DEFG HIJK LMN" . PHP_EOL,
+            "O | OPQR STUV WXYZ ABCD EFGH IJKL MNO" . PHP_EOL,
+            "P | PQRS TUVW XYZA BCDE FGHI JKLM NOP" . PHP_EOL,
+            "Q | QRST UVWX YZAB CDEF GHIJ KLMN OPQ" . PHP_EOL,
+            "R | RSTU VWXY ZABC DEFG HIJK LMNO PQR" . PHP_EOL,
+            "S | STUV WXYZ ABCD EFGH IJKL MNOP QRS" . PHP_EOL,
+            "T | TUVW XYZA BCDE FGHI JKLM NOPQ RST" . PHP_EOL,
+            "U | UVWX YZAB CDEF GHIJ KLMN OPQR STU" . PHP_EOL,
+            "V | VWXY ZABC DEFG HIJK LMNO PQRS TUV" . PHP_EOL,
+            "W | WXYZ ABCD EFGH IJKL MNOP QRST UVW" . PHP_EOL,
+            "X | XYZA BCDE FGHI JKLM NOPQ RSTU VWX" . PHP_EOL,
+            "Y | YZAB CDEF GHIJ KLMN OPQR STUV WXY" . PHP_EOL,
+            "Z | ZABC DEFG HIJK LMNO PQRS TUVW XYZ" . PHP_EOL
         );
 
         foreach ($table as $idx => $line) {
@@ -148,6 +148,6 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
         $options = array('key' => $key);
         $cipher  = new VigenereCipher($options);
         $cipher->loadTable($this->table);
-        $cipher->printTable(false, $stub); // prints lines with Vigenere table
+        $cipher->printTable(4, $stub); // prints lines with Vigenere table
     }
 }
