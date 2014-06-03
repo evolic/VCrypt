@@ -11,10 +11,6 @@ namespace VCryptTest\Cipher;
 
 use VCrypt\Cipher\VigenereCipher;
 
-/**
- * Outside the Internal Function tests, tests do not distinguish between hash and mhash
- * when available. All tests use Hashing algorithms both extensions implement.
- */
 
 /**
  * @group      Vigenere
