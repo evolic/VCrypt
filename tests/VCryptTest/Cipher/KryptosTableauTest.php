@@ -11,10 +11,6 @@ namespace VCryptTest\Cipher;
 
 use VCrypt\Cipher\VigenereCipher;
 
-/**
- * Outside the Internal Function tests, tests do not distinguish between hash and mhash
- * when available. All tests use Hashing algorithms both extensions implement.
- */
 
 /**
  * @group      Vigenere
@@ -23,7 +19,7 @@ use VCrypt\Cipher\VigenereCipher;
  * @since      April 26, 2014
  * @copyright  (C) 2014 Tomasz Kuter Loculus Evolution
  */
-class KryptosTest extends \PHPUnit_Framework_TestCase
+class KryptosTableauTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
