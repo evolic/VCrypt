@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Vigenère cipher (http://vcrypt.tomaszkuter.com/)
  *
