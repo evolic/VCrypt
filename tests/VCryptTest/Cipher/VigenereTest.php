@@ -59,7 +59,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideDecodeUsingVigenereTableData
      */
-    public function testDncodeUsingVigenereTable($data, $printText)
+    public function testDecodeUsingVigenereTable($data, $printText)
     {
         $key = 'LEMON';
         $options = array('key' => $key);
