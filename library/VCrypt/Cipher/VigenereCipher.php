@@ -52,6 +52,12 @@ class VigenereCipher
     protected $key;
 
     /**
+     * Secret Key length
+     * @var int
+     */
+    protected $keyLength = 0;
+
+    /**
      * Specifies if cipher is case sensitive
      * @var bool
      */
@@ -181,7 +187,7 @@ class VigenereCipher
      * Sets a secret key
      *
      * @param string $key Secret key used for data encryption
-     * @return Vigenere
+     * @return VigenereCipher
      */
     public function setKey($key)
     {
@@ -191,6 +197,9 @@ class VigenereCipher
             $this->key = mb_strtoupper($key, 'utf-8');
         }
 
+        // set key length to save time and cpu
+        $this->keyLength = mb_strlen($key, 'utf-8');
+
         return $this;
     }
 
@@ -198,7 +207,7 @@ class VigenereCipher
      * Sets if cipher is case sensitive or not
      *
      * @param bool $caseSensitive
-     * @return Vigenere
+     * @return VigenereCipher
      */
     public function setCaseSensitive($caseSensitive)
     {
@@ -304,7 +313,7 @@ class VigenereCipher
         $offset = 0;
 
         // get reverse key
-        for ($i=0; $i<mb_strlen($this->key, 'utf-8'); $i++) {
+        for ($i=0; $i<$this->keyLength; $i++) {
             // $kch = $this->key[$i]
             $kch = mb_substr($this->key, $i, 1, 'utf-8');
             if (!$this->getCaseSensitive()) {
