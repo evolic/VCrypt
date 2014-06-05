@@ -105,7 +105,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
 
     public function testPrintTextingVigenereTable()
     {
-        $stub = $this->getMock('Output', array('printText'));
+        $stub = $this->getMock('VCrypt\Common\Output', array('printText'));
 
         $table = array(
             "  | ABCD EFGH IJKL MNOP QRST UVWX YZ" . PHP_EOL,
@@ -150,7 +150,6 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
         $reflectionProperty  = new \ReflectionProperty('VCrypt\Cipher\VigenereCipher', 'table');
         $reflectionProperty->setAccessible(true);
 
-        $output = new Output();
-        $output->printTableau($reflectionProperty->getValue($cipher), 4, $stub); // prints lines with Vigenere table
+        $stub->printTableau($reflectionProperty->getValue($cipher), 4); // prints lines with Vigenere table
     }
 }
