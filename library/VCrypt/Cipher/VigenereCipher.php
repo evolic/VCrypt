@@ -95,8 +95,10 @@ class VigenereCipher
 
 
     /**
-     * Loads Vigenère table, known as the tabula recta
+     * Loads Trithemius' tableau, known as the tabula recta
      * Table is used for encryption and decryption
+     *
+     * @see http://en.wikipedia.org/wiki/Tabula_recta
      *
      * @param string $file Path to file contains tabula recta
      * @return void
@@ -137,50 +139,6 @@ class VigenereCipher
             }
             fclose($handle);
         }
-    }
-
-    /**
-     * Prints Vigenère table, known as the tabula recta
-     * Function mostly for the debugging purpose
-     *
-     * @see http://rumkin.com/tools/cipher/vigenere-keyed.php Show tableau
-     * @param int  $charsInColumn
-     * @param Output $output
-     * @return void
-     */
-    public function printTable($charsInColumn = 4, $output = null)
-    {
-        if (!isset($output)) {
-            $output = new Output();
-        }
-
-        $idx = 0;
-
-        foreach ($this->table as $col => $rows) {
-            $line = '';
-
-            $chars = -1;
-
-            foreach ($rows as $row => $char) {
-                if ($chars === 0) {
-                    $line .= ' |';
-                }
-                if ($chars % $charsInColumn === 0) {
-                    $line .= ' ';
-                }
-
-                $line .= $char;
-                $chars++;
-            }
-
-            $line .=  PHP_EOL;
-
-            $output->printText($line);
-
-            $idx++;
-        }
-
-        $output->printText(PHP_EOL);
     }
 
     /**

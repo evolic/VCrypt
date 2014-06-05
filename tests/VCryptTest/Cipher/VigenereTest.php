@@ -10,6 +10,7 @@
 namespace VCryptTest\Cipher;
 
 use VCrypt\Cipher\VigenereCipher;
+use VCrypt\Common\Output;
 
 
 /**
@@ -144,6 +145,11 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
         $options = array('key' => $key);
         $cipher  = new VigenereCipher($options);
         $cipher->loadTable($this->table);
-        $cipher->printTable(4, $stub); // prints lines with Vigenere table
+
+        $reflectionProperty  = new \ReflectionProperty('VCrypt\Cipher\VigenereCipher', 'table');
+        $reflectionProperty->setAccessible(true);
+
+        $output = new Output();
+        $output->printTableau($reflectionProperty->getValue($cipher), 4, $stub); // prints lines with Vigenere table
     }
 }
