@@ -31,7 +31,7 @@ class KryptosTranspositionCipher
      *
      * @var boolean
      */
-    static protected $debug = false;
+    protected static $debug = false;
 
 
     /**
