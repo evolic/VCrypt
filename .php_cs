@@ -19,9 +19,11 @@ $config->fixers(
 //        'braces',
         'function_declaration',
         'psr0',
-//        'elseif',
+        'elseif',
         'eof_ending',
         'unused_use',
+        // my own
+        'return',
     )
 );
 $config->finder($finder);

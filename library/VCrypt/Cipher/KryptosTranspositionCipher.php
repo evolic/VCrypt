@@ -354,6 +354,7 @@ class KryptosTranspositionCipher
     public function setPadSize($padSize)
     {
         $this->padSize = $padSize;
+
         return $this;
     }
 }

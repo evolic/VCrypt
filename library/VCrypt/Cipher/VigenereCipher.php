@@ -170,6 +170,7 @@ class VigenereCipher
     public function setCaseSensitive($caseSensitive)
     {
         $this->caseSensitive = $caseSensitive;
+
         return $this;
     }
 
@@ -328,7 +329,6 @@ class VigenereCipher
             }
         }
 
-
         return $this->sieveKey($key);
     }
 
@@ -357,7 +357,7 @@ class VigenereCipher
                 if ($keyLength === $stringLength && $key !== $string) {
                     $valid = false;
                     break;
-                } else if ($keyLength !== $stringLength && mb_substr($key, 0, $stringLength, 'utf-8') !== $string) {
+                } elseif ($keyLength !== $stringLength && mb_substr($key, 0, $stringLength, 'utf-8') !== $string) {
                     // last string can be shorter than the key
                     $valid = false;
                     break;
