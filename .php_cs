@@ -10,6 +10,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
 $config = Symfony\CS\Config\Config::create();
 $config->fixers(
     array(
+      // borrowed from Zend Framework 2
         'indentation',
         'linefeed',
         'trailing_spaces',
@@ -22,8 +23,9 @@ $config->fixers(
         'elseif',
         'eof_ending',
         'unused_use',
-        // my own
+      // my own
         'return',
+        'controls_spaces',
     )
 );
 $config->finder($finder);
