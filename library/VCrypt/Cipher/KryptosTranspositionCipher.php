@@ -270,8 +270,6 @@ class KryptosTranspositionCipher
                 $charsInTheRow++;
             }
 
-            var_dump(array($chars, $charsInTheRow));
-
             if (!$chars || $charsInTheRow <= $chars) {
                 $chars = $charsInTheRow;
             } else {
