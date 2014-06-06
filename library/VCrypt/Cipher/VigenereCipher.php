@@ -32,14 +32,14 @@ class VigenereCipher
 
 
     /**
-     * Tableou Mapping
+     * Trithemius' tableau mapping
      *
      * @var array
      */
     protected $mapping = array();
 
     /**
-     * Tableou
+     * Trithemius' tableau
      *
      * @var array
      */
