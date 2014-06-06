@@ -11,7 +11,7 @@
 namespace VCrypt\Cipher;
 
 
-use VCrypt\Common\Output;
+use VCrypt\Exception\EncryptedAndDecryptedTextLengthMismatchException;
 
 /**
  * Vigenère cipher class
@@ -296,7 +296,7 @@ class VigenereCipher
     public function readKey($encrypted, $decrypted)
     {
         if (($elen = mb_strlen($encrypted, 'utf-8')) !== ($dlen = mb_strlen($decrypted, 'utf-8'))) {
-            throw new \Exception(
+            throw new EncryptedAndDecryptedTextLengthMismatchException(
                 'Texts cannot be processed because of strings length mismatch!',
                 self::EXCEPTION_CODE_STRINGS_LENGTH_MISMATCH
             );

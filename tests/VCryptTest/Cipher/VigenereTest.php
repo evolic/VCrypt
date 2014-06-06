@@ -97,7 +97,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
         $encrypted = 'LXFOPVEFRNHR';
 
         $this->setExpectedException(
-            '\Exception',
+            'VCrypt\Exception\EncryptedAndDecryptedTextLengthMismatchException',
             'Texts cannot be processed because of strings length mismatch!'
         );
         $cipher->readKey($encrypted, $decrypted);
