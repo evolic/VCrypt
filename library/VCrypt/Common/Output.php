@@ -27,10 +27,8 @@ class Output
    * @see http://en.wikipedia.org/wiki/Tabula_recta
    * @see http://rumkin.com/tools/cipher/vigenere-keyed.php Show tableau
    *
-   * @param array $tableau
-   * @param int  $charsInColumn
-   * @param Output $output
-   * @return void
+   * @param array $tableau       Trithemius' tableau as an array
+   * @param int   $charsInColumn Number of characters in the single column
    */
     public function printTableau($tableau, $charsInColumn = 4)
     {
@@ -63,6 +61,12 @@ class Output
         $this->printText(PHP_EOL);
     }
 
+    /**
+     * Prints single, transposed column
+     *
+     * @param array $transposedColumn Transposed column
+     * @param int   $charsInColumn    Number of characters in the single column
+     */
     public function printSingleColumn($transposedColumn, $charsInColumn = 4)
     {
         $lines  = count($transposedColumn);
@@ -98,6 +102,12 @@ class Output
         $this->printText(PHP_EOL);
     }
 
+    /**
+     * Prints text divided into columns
+     *
+     * @param array $columns       Text divided into columns
+     * @param int   $charsInColumn Number of characters in the single column
+     */
     public function printColumns($columns, $charsInColumn = 4)
     {
         $lines  = count($columns[0]);
@@ -128,8 +138,8 @@ class Output
      * Returns line number with some spaces at the beginning.
      * Spaces and line number must be a string with a length specified in $digits param
      *
-     * @param int $line
-     * @param int $digits
+     * @param  int    $line   Number of the line
+     * @param  int    $digits Number of digits, filled with spaces for lower numbers
      * @return string
      */
     public function getLineNumber($line, $digits)
@@ -146,6 +156,11 @@ class Output
         return $lineNumber;
     }
 
+    /**
+     * Low level method, which prints text into stdout
+     *
+     * @param string $text Text, which will be printed
+     */
     public function printText($text)
     {
         echo $text;
