@@ -11,8 +11,10 @@
 namespace VCrypt\Cipher;
 
 
+use VCrypt\Common\Output;
 use VCrypt\Exception\InvalidTranspositionSourceTextException;
 use VCrypt\Exception\KeyNotSetException;
+use VCrypt\Exception\InvalidPadSizeException;
 
 /**
  * Kryptos transposition cipher class
@@ -24,6 +26,14 @@ use VCrypt\Exception\KeyNotSetException;
  */
 class KryptosTranspositionCipher
 {
+    /**
+     * Enable debug mode
+     *
+     * @var boolean
+     */
+    static protected $debug = false;
+
+
     /**
      * Secret Key
      * @var string
@@ -45,6 +55,13 @@ class KryptosTranspositionCipher
 
     protected $transpositionTable = array();
 
+    /**
+     * Instance of the object printing data
+     *
+     * @var Output
+     */
+    protected $output;
+
 
     /**
      * Constructor
@@ -62,6 +79,15 @@ class KryptosTranspositionCipher
         if (array_key_exists('pad-size', $options)) {
             $this->setPadSize($options['pad-size']);
         }
+    }
+
+
+    /**
+     * Enable/Disable debug mode
+     */
+    public static function setDebug($debug)
+    {
+       self::$debug = $debug;
     }
 
 
@@ -207,6 +233,10 @@ class KryptosTranspositionCipher
             while ($skip < $rowLength);
         }
 
+        if (self::$debug && !is_null($this->output)) {
+            $this->output->printColumns($columns, $this->keyLength, $this->output);
+        }
+
         return $columns;
     }
 
@@ -219,6 +249,43 @@ class KryptosTranspositionCipher
             foreach ($column as $row) {
                 $transposedColumn[] = $this->transpose($row);
             }
+        }
+
+        if (self::$debug && !is_null($this->output)) {
+            $this->output->printSingleColumn($transposedColumn, 4, $this->output);
+        }
+
+        // validate possibility of the decryption
+        $chars = 0;
+        $idx   = 1;
+
+        foreach ($transposedColumn as $row) {
+            $charsInTheRow = 0;
+
+            foreach ($row as $char) {
+                if ($char == '') {
+                    continue;
+                }
+
+                $charsInTheRow++;
+            }
+
+            var_dump(array($chars, $charsInTheRow));
+
+            if (!$chars || $charsInTheRow <= $chars) {
+                $chars = $charsInTheRow;
+            } else {
+                throw new InvalidPadSizeException(
+                    sprintf(
+                        'Specified pad size: %d is not valid for specified text (rows: %d and %d). Decryption won\'t be possible. Try to decrease or increase pad size!',
+                        $this->padSize,
+                        $idx - 1,
+                        $idx
+                    )
+                );
+            }
+
+            $idx++;
         }
 
         return $transposedColumn;
@@ -239,12 +306,25 @@ class KryptosTranspositionCipher
         return $text;
     }
 
-    public function encode($text)
+    /**
+     * Encodes provided text
+     *
+     * @param string $text
+     * @param Output $output
+     * @return string
+     */
+    public function encode($text, $output = null)
     {
+        if (!isset($output)) {
+            $output = new Output();
+        }
+        $this->output = $output;
+
         $invertedText     = $this->backward($text);
         $paddedTextInRows = $this->padText($invertedText);
         $columns          = $this->slicePad($paddedTextInRows);
         $transposedColumn = $this->transposeColumns($columns);
+
         $encrypted        = $this->downward($transposedColumn);
 
         return $encrypted;

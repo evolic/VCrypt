@@ -32,12 +32,8 @@ class Output
    * @param Output $output
    * @return void
    */
-    public function printTableau($tableau, $charsInColumn = 4, $output = null)
+    public function printTableau($tableau, $charsInColumn = 4)
     {
-        if (!isset($output)) {
-            $output = $this;
-        }
-
         $idx = 0;
 
         foreach ($tableau as $col => $rows) {
@@ -59,12 +55,95 @@ class Output
 
             $line .=  PHP_EOL;
 
-            $output->printText($line);
+            $this->printText($line);
 
             $idx++;
         }
 
-        $output->printText(PHP_EOL);
+        $this->printText(PHP_EOL);
+    }
+
+    public function printSingleColumn($transposedColumn, $charsInColumn = 4)
+    {
+        $lines  = count($transposedColumn);
+        $digits = ceil(log10($lines));
+
+        for ($i=0; $i<$lines; $i++) {
+            $line = '';
+            $row  = $transposedColumn[$i];
+
+            $line = ' ' . $this->getLineNumber($i+1, $digits) . ' | ';
+
+            $chars = 0;
+
+            foreach ($row as $columnNumber => $char) {
+                // convert empty chars into spaces
+                if ($char == '') {
+                    $char = ' ';
+                }
+
+                if ($chars && $chars % $charsInColumn === 0) {
+                    $line .= ' ';
+                }
+
+                $line .= $char;
+                $chars++;
+            }
+
+            $line .=  PHP_EOL;
+
+            $this->printText($line);
+        }
+
+        $this->printText(PHP_EOL);
+    }
+
+    public function printColumns($columns, $charsInColumn = 4)
+    {
+        $lines  = count($columns[0]);
+        $digits = ceil(log10($lines));
+
+        for ($i=0; $i<$lines; $i++) {
+            $line = ' ' . $this->getLineNumber($i+1, $digits) . ' | ';
+
+            foreach ($columns as $j => $column) {
+                if ($j) {
+                    $line .= ' ';
+                }
+
+                if (array_key_exists($i, $column)) {
+                    $line .= $column[$i];
+                }
+            }
+
+            $line .=  PHP_EOL;
+
+            $this->printText($line);
+        }
+
+        $this->printText(PHP_EOL);
+    }
+
+    /**
+     * Returns line number with some spaces at the beginning.
+     * Spaces and line number must be a string with a length specified in $digits param
+     *
+     * @param int $line
+     * @param int $digits
+     * @return string
+     */
+    public function getLineNumber($line, $digits)
+    {
+        $spaces     = $digits - strlen((string) $line);
+        $lineNumber = '';
+
+        for ($i=0; $i<$spaces; $i++) {
+            $lineNumber .= ' ';
+        }
+
+        $lineNumber .= $line;
+
+        return $lineNumber;
     }
 
     public function printText($text)
