@@ -68,7 +68,6 @@ class VigenereCipher
      * Constructor
      *
      * @param array $options
-     * @return void
      */
     public function __construct($options = array())
     {
@@ -364,16 +363,14 @@ class VigenereCipher
                 } else {
                     $idx += $keyLength;
                 }
-            }
-            while ($idx < $textLength);
+            } while ($idx < $textLength);
 
             $keyLength++;
 
             if ($valid) {
                 break;
             }
-        }
-        while (true);
+        } while (true);
 
         return $key;
     }

@@ -67,7 +67,6 @@ class KryptosTranspositionCipher
      * Constructor
      *
      * @param array $options
-     * @return void
      */
     public function __construct($options = array())
     {
@@ -147,6 +146,7 @@ class KryptosTranspositionCipher
      * Transposes specified text and returns it as an array
      *
      * @param string $text
+     * @throws KeyNotSetException
      * @throws InvalidTranspositionSourceTextException
      * @return array
      */
@@ -201,8 +201,7 @@ class KryptosTranspositionCipher
             $row = mb_substr($text, $skip, $this->padSize, 'utf-8');
             $textInRows[] = $row;
             $skip += $this->padSize;
-        }
-        while ($skip < $textLength);
+        } while ($skip < $textLength);
 
         return $textInRows;
     }
@@ -229,8 +228,7 @@ class KryptosTranspositionCipher
 
                 $skip += $this->keyLength;
                 $idx++;
-            }
-            while ($skip < $rowLength);
+            } while ($skip < $rowLength);
         }
 
         if (self::$debug && !is_null($this->output)) {
@@ -244,8 +242,7 @@ class KryptosTranspositionCipher
     {
         $transposedColumn = array();
 
-        foreach ($columns as $column)
-        {
+        foreach ($columns as $column) {
             foreach ($column as $row) {
                 $transposedColumn[] = $this->transpose($row);
             }
@@ -291,7 +288,7 @@ class KryptosTranspositionCipher
 
     protected function downward($column)
     {
-        $text      = '';
+        $text = '';
 
         for ($i = 0; $i<$this->keyLength; $i++) {
             foreach ($column as $row) {
