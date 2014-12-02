@@ -20,6 +20,9 @@ namespace VCrypt\Common;
  */
 class Output
 {
+    public static $firephp = false;
+
+
   /**
    * Prints Trithemius' tableau, known as the tabula recta
    * Function mostly for the debugging purpose
@@ -41,7 +44,7 @@ class Output
 
             foreach ($rows as $row => $char) {
                 if ($chars === 0) {
-                  $line .= ' |';
+                    $line .= ' |';
                 }
                 if ($chars % $charsInColumn === 0) {
                     $line .= ' ';
@@ -69,8 +72,18 @@ class Output
      */
     public function printSingleColumn($transposedColumn, $charsInColumn = 4)
     {
+        if (self::$firephp) {
+            $firephp = \FirePHP::getInstance();
+            $firephp->info(__METHOD__);
+        }
+
         $lines  = count($transposedColumn);
-        $digits = ceil(log10($lines));
+        $log10  = log10($lines);
+        $digits = ceil($log10);
+
+        if ($log10 % 1 === 0) {
+            $digits += 1;
+        }
 
         for ($i=0; $i<$lines; $i++) {
             $line = '';
@@ -110,8 +123,30 @@ class Output
      */
     public function printColumns($columns, $charsInColumn = 4)
     {
+        if (self::$firephp) {
+            $firephp = \FirePHP::getInstance();
+            $firephp->info(__METHOD__);
+        }
+
         $lines  = count($columns[0]);
-        $digits = ceil(log10($lines));
+        if (self::$firephp) {
+            $firephp->info($lines, '$lines');
+        }
+        $log10  = log10($lines);
+        if (self::$firephp) {
+            $firephp->info($log10, '$log10');
+        }
+        $digits = ceil($log10);
+        if (self::$firephp) {
+            $firephp->info($digits, '$digits');
+        }
+
+        if ($log10 % 1 === 0) {
+            $digits += 1;
+        }
+        if (self::$firephp) {
+            $firephp->info($digits, '$digits');
+        }
 
         for ($i=0; $i<$lines; $i++) {
             $line = ' ' . $this->getLineNumber($i+1, $digits) . ' | ';

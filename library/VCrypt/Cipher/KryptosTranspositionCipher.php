@@ -86,7 +86,7 @@ class KryptosTranspositionCipher
      */
     public static function setDebug($debug)
     {
-       self::$debug = $debug;
+        self::$debug = $debug;
     }
 
 
@@ -97,7 +97,7 @@ class KryptosTranspositionCipher
      */
     protected function reset()
     {
-      $this->transpositionTable = array();
+        $this->transpositionTable = array();
     }
 
     protected function backward($text)
@@ -107,6 +107,12 @@ class KryptosTranspositionCipher
 
         for ($i = $length - 1; $i>=0; $i--) {
             $string .= mb_substr($text, $i, 1, 'utf-8');
+        }
+
+        if (self::$debug && !is_null($this->output)) {
+            $this->output->printText('0 | ');
+            $this->output->printText($string);
+            $this->output->printText(PHP_EOL . PHP_EOL);
         }
 
         return $string;

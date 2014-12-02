@@ -8,6 +8,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->in(__DIR__ . '/library')
     ;
 $config = Symfony\CS\Config\Config::create();
+$config->level(null);
 $config->fixers(
     array(
       // borrowed from Zend Framework 2
