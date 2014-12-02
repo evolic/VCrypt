@@ -9,6 +9,12 @@
         </testsuite>
     </testsuites>
 
+    <filter>
+        <blacklist>
+            <file>systemlib.phpreflection_hni</file>
+        </blacklist>
+    </filter>
+
     <groups>
         <exclude>
             <group>disable</group>
@@ -21,6 +27,20 @@
     <listeners>
     </listeners>
 
+    <logging>
+        <log
+            type="coverage-html"
+            target="build/coverage"
+            charset="UTF-8"
+            yui="true"
+            highlight="true"
+            lowUpperBound="35"
+            highLowerBound="70"
+            showUncoveredFiles="true"
+            />
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
+
     <php>
         <ini name="date.timezone" value="UTC"/>
 
@@ -28,7 +48,5 @@
 
         <!--<var name="ZEND_DB_ADAPTER_DRIVER_SQLITE_MEMORY" value="true" />-->
     </php>
-
-
 
 </phpunit>
