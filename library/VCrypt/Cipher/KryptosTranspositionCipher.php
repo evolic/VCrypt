@@ -4,6 +4,7 @@
  * Kryptos transposition cipher (http://vcrypt.tomaszkuter.com/)
  *
  * @link      http://github.com/loculus/vcrypt for the canonical source repository
+ * @link      http://math.ucsd.edu/~crypto/Projects/KarlWang/index2.html Detailed cipher description
  * @copyright Copyright (c) 2014 Tomasz Kuter (http://www.tomaszkuter.com)
  * @license   http://tomaszkuter.com/license/new-bsd New BSD License
  */
@@ -13,8 +14,11 @@ namespace VCrypt\Cipher;
 
 use VCrypt\Common\Output;
 use VCrypt\Exception\InvalidTranspositionSourceTextException;
+use VCrypt\Exception\InvalidUndoTranspositionException;
 use VCrypt\Exception\KeyNotSetException;
 use VCrypt\Exception\InvalidPadSizeException;
+use VCrypt\Exception\PadSizeNotSetException;
+use Zend\Code\Reflection\Exception\BadMethodCallException;
 
 /**
  * Kryptos transposition cipher class
@@ -52,6 +56,30 @@ class KryptosTranspositionCipher
      */
     protected $padSize = 86;
 
+    /**
+     * Specifies auto-correction mode if pad size is not valid for text provided to encode
+     * @var bool
+     */
+    protected $autoCorrectionForPadSizeMismatchWithProvivedText = false;
+
+    /**
+     * Specifies auto-correction mode if pad size is not valid for text provided to encode
+     * @var int
+     */
+    protected $autoCorrectionCount = 0;
+
+    /**
+     * Specifies how many cipher was unable to decode encrypted text during encoding process (auto-test)
+     * @var int
+     */
+    protected $failedDecodingCount = 0;
+
+    /**
+     * Specifies if InvalidPadSizeException should be skipped inside transposeColumns() method
+     * @var bool
+     */
+    protected $paddingSimulation = false;
+
 
     protected $transpositionTable = array();
 
@@ -78,6 +106,9 @@ class KryptosTranspositionCipher
         if (array_key_exists('pad-size', $options)) {
             $this->setPadSize($options['pad-size']);
         }
+        if (array_key_exists('auto-correction', $options)) {
+            $this->setAutoCorrection($options['auto-correction']);
+        }
     }
 
 
@@ -100,6 +131,12 @@ class KryptosTranspositionCipher
         $this->transpositionTable = array();
     }
 
+    /**
+     * Backwards text
+     *
+     * @param string $text
+     * @return string
+     */
     protected function backward($text)
     {
         $length = mb_strlen($text, 'utf-8');
@@ -133,14 +170,14 @@ class KryptosTranspositionCipher
             $keyAsArray[] = mb_substr($key, $i, 1, 'utf-8');
         }
 
-        $keyAsArraySorted = $keyAsArray;
-        sort($keyAsArraySorted);
+        $keyAsOrderedArray = $keyAsArray;
+        sort($keyAsOrderedArray);
 
         for ($i=0; $i<$this->keyLength; $i++) {
             $char = $keyAsArray[$i];
 
             for ($j=0; $j<$this->keyLength; $j++) {
-                if ($char === $keyAsArraySorted[$j]) {
+                if ($char === $keyAsOrderedArray[$j]) {
                     $this->transpositionTable[$i] = $j;
                     continue;
                 }
@@ -191,9 +228,54 @@ class KryptosTranspositionCipher
     }
 
     /**
+     * Reverts text as it was before transposition of the specified array
+     *
+     * @param array $array
+     * @return string
+     */
+    protected function splitInputIntoRows($text, $transposedColumnLengths)
+    {
+        $reversedColumnLengths = array();
+        $columns = array();
+        $textLength = mb_strlen($text, 'utf-8');
+
+        $skip = 0;
+
+        for ($i=0; $i<$this->keyLength; $i++) {
+            $columns[] = mb_substr($text, $skip, $transposedColumnLengths[$i], 'utf-8');
+            $skip += $transposedColumnLengths[$i];
+        }
+
+        if ($skip !== $textLength) {
+            var_dump($skip, $textLength, $text, $transposedColumnLengths);
+            throw new InvalidUndoTranspositionException();
+        }
+
+        return $columns;
+    }
+
+    /**
+     * Reorders columns over the rows
+     *
+     * @param array $rows
+     * @return array
+     */
+    protected function reorderColumns($rows)
+    {
+        $reorderedRows = array();
+
+        foreach ($this->transpositionTable as $idx) {
+            $reorderedRows[] = $rows[$idx];
+        }
+
+        return $reorderedRows;
+    }
+
+    /**
      * Pads specified text (slice it into the rows with fixed length)
      *
      * @param string $text
+     * @throws PadSizeNotSetException
      * @return array
      */
     protected function padText($text)
@@ -202,6 +284,10 @@ class KryptosTranspositionCipher
         $textLength = mb_strlen($text, 'utf-8');
 
         $skip = 0;
+
+        if (!isset($this->padSize)) {
+            throw new PadSizeNotSetException('You must set pad size first');
+        }
 
         do {
             $row = mb_substr($text, $skip, $this->padSize, 'utf-8');
@@ -218,7 +304,7 @@ class KryptosTranspositionCipher
      * @param array $textInRows
      * @return array
      */
-    protected function slicePad($textInRows)
+    protected function slicePad($textInRows, $sliceSize)
     {
         $columns = array();
 
@@ -229,21 +315,28 @@ class KryptosTranspositionCipher
             $idx  = 0;
 
             do {
-                $slice = mb_substr($row, $skip, $this->keyLength, 'utf-8');
+                $slice = mb_substr($row, $skip, $sliceSize, 'utf-8');
                 $columns[$idx][] = $slice;
 
-                $skip += $this->keyLength;
+                $skip += $sliceSize;
                 $idx++;
             } while ($skip < $rowLength);
         }
 
         if (self::$debug && !is_null($this->output)) {
-            $this->output->printColumns($columns, $this->keyLength, $this->output);
+            $this->output->printColumns($columns, $sliceSize, $this->output);
         }
 
         return $columns;
     }
 
+    /**
+     * Transposes columns provided as the array
+     *
+     * @param unknown $columns
+     * @throws InvalidPadSizeException
+     * @return array
+     */
     protected function transposeColumns($columns)
     {
         $transposedColumn = array();
@@ -273,17 +366,20 @@ class KryptosTranspositionCipher
                 $charsInTheRow++;
             }
 
+            // @todo add description!
             if (!$chars || $charsInTheRow <= $chars) {
                 $chars = $charsInTheRow;
             } else {
-                throw new InvalidPadSizeException(
-                    sprintf(
-                        'Specified pad size: %d is not valid for specified text (rows: %d and %d). Decryption won\'t be possible. Try to decrease or increase pad size!',
-                        $this->padSize,
-                        $idx - 1,
-                        $idx
-                    )
-                );
+                if (!$this->paddingSimulation) {
+                    throw new InvalidPadSizeException(
+                        sprintf(
+                            'Specified pad size: %d is not valid for specified text (rows: %d and %d). Decryption won\'t be possible. Try to decrease or increase pad size!',
+                            $this->padSize,
+                            $idx - 1,
+                            $idx
+                        )
+                    );
+                }
             }
 
             $idx++;
@@ -292,13 +388,19 @@ class KryptosTranspositionCipher
         return $transposedColumn;
     }
 
+    /**
+     * Concatenates string downward over the rows in the column
+     *
+     * @param array $column
+     * @return string
+     */
     protected function downward($column)
     {
         $text = '';
 
         for ($i = 0; $i<$this->keyLength; $i++) {
             foreach ($column as $row) {
-                // character can be empt string
+                // character can be empty string
                 $char = $row[$i];
                 $text .= $char;
             }
@@ -321,15 +423,171 @@ class KryptosTranspositionCipher
         }
         $this->output = $output;
 
-        $invertedText     = $this->backward($text);
-        $paddedTextInRows = $this->padText($invertedText);
-        $columns          = $this->slicePad($paddedTextInRows);
+        $this->autoCorrectionCount = 0;
+        $this->failedDecodingCount = 0;
+
+        if (!$this->autoCorrectionForPadSizeMismatchWithProvivedText) {
+            $invertedText     = $this->backward($text);
+            $paddedTextInRows = $this->padText($invertedText);
+            $columns          = $this->slicePad($paddedTextInRows, $this->keyLength);
+            $transposedColumn = $this->transposeColumns($columns);
+
+            $encrypted        = $this->downward($transposedColumn);
+
+            return $encrypted;
+        } else {
+            $source = $text;
+            $sourceLength = mb_strlen($source, 'utf-8');
+
+            do {
+                try {
+                    if ($this->autoCorrectionCount) {
+                        var_dump('try: ' . $this->autoCorrectionCount);
+                    }
+
+                    $invertedText     = $this->backward($text);
+                    $paddedTextInRows = $this->padText($invertedText);
+                    $columns          = $this->slicePad($paddedTextInRows, $this->keyLength);
+                    $transposedColumn = $this->transposeColumns($columns);
+
+                    $encrypted        = $this->downward($transposedColumn);
+
+                    $decrypted        = $this->decode($encrypted);
+
+                    return $encrypted;
+                }
+                catch (InvalidPadSizeException $e) {
+                    $char = mb_substr($source, mt_rand(0, $sourceLength), 1, 'utf-8');
+                    $text .=  $char;
+
+                    $this->autoCorrectionCount++;
+                }
+                catch (InvalidUndoTranspositionException $e) {
+                    $source = $text;
+                    $sourceLength = mb_strlen($source, 'utf-8');
+
+                    $char = mb_substr($source, mt_rand(0, $sourceLength), 1, 'utf-8');
+                    $text .=  $char;
+
+                    $this->autoCorrectionCount = 0;
+                    $this->failedDecodingCount++;
+                }
+            } while(true);
+        }
+    }
+
+    /**
+     * Gets transposed column lengths
+     * E.g. [51, 47, 47, 51, 47, 47, 47]
+     *
+     * @param string $text
+     * @param Output $output
+     * @return string
+     */
+    protected function getTransposedColumnLengths($text, $transposedColumn)
+    {
+        $textLength = mb_strlen($text, 'utf-8');
+
+        if (!isset($this->key)) {
+            throw new KeyNotSetException('You must set key first');
+        }
+        if (!isset($this->padSize)) {
+            throw new PadSizeNotSetException('You must set pad size first');
+        }
+
+        if (empty($this->transpositionTable)) {
+            $this->buildTranspositionTable();
+        }
+
+        $transposedColumnLengths = array();
+        $transposedColumnLength  = count($transposedColumn);
+
+        for ($i=0; $i<$this->keyLength; $i++) {
+            for ($j=$transposedColumnLength-1; $j>0; $j--) {
+                if ($transposedColumn[$j][$i] !== '') {
+                    $transposedColumnLengths[] = $j + 1;
+                    break;
+                }
+            }
+        }
+
+        return $transposedColumnLengths;
+    }
+
+    /**
+     * Decodes provided text
+     *
+     * @param string $text
+     * @param Output $output
+     * @return string
+     */
+    public function decode($text, $output = null)
+    {
+        if (!isset($output)) {
+            $output = new Output();
+        }
+        $this->output = $output;
+
+        $textLength = mb_strlen($text, 'utf-8');
+
+        // turning on simulation mode
+        $this->paddingSimulation = true;
+
+        $paddedTextInRows = $this->padText($text);
+        $columns          = $this->slicePad($paddedTextInRows, $this->keyLength);
         $transposedColumn = $this->transposeColumns($columns);
 
-        $encrypted        = $this->downward($transposedColumn);
+        // turning off simulation mode
+        $this->paddingSimulation = false;
 
-        return $encrypted;
+        $transposedColumnLengths = $this->getTransposedColumnLengths($text, $transposedColumn);
+        $splittedTextInRows      = $this->splitInputIntoRows($text, $transposedColumnLengths);
+        $reorderedRows           = $this->reorderColumns($splittedTextInRows);
+
+        // chop rows into columns according to slice size
+        $sliceSize = (int) ceil($textLength / $this->padSize);
+
+        $rowsSlicedIntoColumns = $this->slicePad($reorderedRows, $sliceSize);
+        $invertedText          = $this->undoSlicePad($rowsSlicedIntoColumns, $sliceSize, $textLength);
+
+        $decrypted             = $this->backward($invertedText);
+
+        return $decrypted;
     }
+
+    /**
+     * Undo padding according slice size and text length from the rows sliced into columns
+     *
+     * @param unknown $rowsSlicedIntoColumns
+     * @param unknown $sliceSize
+     * @param unknown $textLength
+     * @return string
+     */
+    protected function undoSlicePad($rowsSlicedIntoColumns, $sliceSize, $textLength)
+    {
+        $text = '';
+
+        $slicesLengths = array();
+
+        for ($i=0; $i<$sliceSize; $i++) {
+            foreach ($rowsSlicedIntoColumns as $slices) {
+                foreach ($slices as $row) {
+                    $rowLength = mb_strlen($row, 'utf-8');
+
+                    if ($i >= $rowLength) {
+                        $char = '';
+                    } else {
+                        $char = mb_substr($row, $i, 1, 'utf-8');
+                    }
+
+                    $text .= $char;
+                }
+            }
+        }
+
+        return $text;
+    }
+
 
 
     /**
@@ -359,5 +617,28 @@ class KryptosTranspositionCipher
         $this->padSize = $padSize;
 
         return $this;
+    }
+
+    /**
+     * Sets auto-correction mode if pad size is not valid for text provided to encode
+     *
+     * @param bool $autoCorrection
+     * @return KryptosTranspositionCipher
+     */
+    public function setAutoCorrection($autoCorrection)
+    {
+        $this->autoCorrectionForPadSizeMismatchWithProvivedText = $autoCorrection;
+
+        return $this;
+    }
+
+    /**
+     * Returns how many auto-correction was applied to encoded text
+     *
+     * @return int counter
+     */
+    public function getAutoCorrectionCount()
+    {
+        return $this->autoCorrectionCount;
     }
 }
