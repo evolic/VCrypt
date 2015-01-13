@@ -18,7 +18,6 @@ use VCrypt\Exception\InvalidUndoTranspositionException;
 use VCrypt\Exception\KeyNotSetException;
 use VCrypt\Exception\InvalidPadSizeException;
 use VCrypt\Exception\PadSizeNotSetException;
-use Zend\Code\Reflection\Exception\BadMethodCallException;
 
 /**
  * Kryptos transposition cipher class
@@ -455,14 +454,12 @@ class KryptosTranspositionCipher
                     $decrypted        = $this->decode($encrypted);
 
                     return $encrypted;
-                }
-                catch (InvalidPadSizeException $e) {
+                } catch (InvalidPadSizeException $e) {
                     $char = mb_substr($source, mt_rand(0, $sourceLength), 1, 'utf-8');
                     $text .=  $char;
 
                     $this->autoCorrectionCount++;
-                }
-                catch (InvalidUndoTranspositionException $e) {
+                } catch (InvalidUndoTranspositionException $e) {
                     $source = $text;
                     $sourceLength = mb_strlen($source, 'utf-8');
 
@@ -472,7 +469,7 @@ class KryptosTranspositionCipher
                     $this->autoCorrectionCount = 0;
                     $this->failedDecodingCount++;
                 }
-            } while(true);
+            } while (true);
         }
     }
 
