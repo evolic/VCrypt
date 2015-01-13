@@ -231,11 +231,13 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
         $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'slicePad');
         $reflectionMethod->setAccessible(true);
 
+        $key = 'KRYPTOS';
         $cipher = new KryptosTranspositionCipher();
-        $cipher->setKey('KRYPTOS');
+        $keyLength = mb_strlen($key, 'utf-8');
+        $cipher->setKey($key);
         $cipher->setPadSize(86);
 
-        $output = $reflectionMethod->invokeArgs($cipher, array($textInRows));
+        $output = $reflectionMethod->invokeArgs($cipher, array($textInRows, $keyLength));
         $this->assertEquals($columns, $output);
     }
 
