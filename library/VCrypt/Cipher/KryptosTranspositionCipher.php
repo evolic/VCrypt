@@ -119,6 +119,14 @@ class KryptosTranspositionCipher
         self::$debug = $debug;
     }
 
+    /**
+     * Checks state of debug mode
+     */
+    public static function getDebug()
+    {
+        return self::$debug;
+    }
+
 
     /**
      * Resets data
@@ -246,7 +254,6 @@ class KryptosTranspositionCipher
         }
 
         if ($skip !== $textLength) {
-            var_dump($skip, $textLength, $text, $transposedColumnLengths);
             throw new InvalidUndoTranspositionException();
         }
 
@@ -440,10 +447,6 @@ class KryptosTranspositionCipher
 
             do {
                 try {
-                    if ($this->autoCorrectionCount) {
-                        var_dump('try: ' . $this->autoCorrectionCount);
-                    }
-
                     $invertedText     = $this->backward($text);
                     $paddedTextInRows = $this->padText($invertedText);
                     $columns          = $this->slicePad($paddedTextInRows, $this->keyLength);
@@ -530,12 +533,22 @@ class KryptosTranspositionCipher
         // turning on simulation mode
         $this->paddingSimulation = true;
 
+        if (self::$debug && !is_null($this->output)) {
+            $this->output->printText('0 | Started padding and transposing simulation');
+            $this->output->printText(PHP_EOL . PHP_EOL);
+        }
+
         $paddedTextInRows = $this->padText($text);
         $columns          = $this->slicePad($paddedTextInRows, $this->keyLength);
         $transposedColumn = $this->transposeColumns($columns);
 
         // turning off simulation mode
         $this->paddingSimulation = false;
+
+        if (self::$debug && !is_null($this->output)) {
+            $this->output->printText('0 | Ended padding and transposing simulation');
+            $this->output->printText(PHP_EOL . PHP_EOL);
+        }
 
         $transposedColumnLengths = $this->getTransposedColumnLengths($text, $transposedColumn);
         $splittedTextInRows      = $this->splitInputIntoRows($text, $transposedColumnLengths);
