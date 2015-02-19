@@ -7,11 +7,12 @@ use VCrypt\Cipher\KryptosTranspositionCipher;
 $firephp = \FirePHP::getInstance(true);
 $firephp->info('FirePHP is on');
 
-$data   = 'SLOWLYDESPARATLYSLOWLYTHEREMAINSOFPASSAGEDEBRISTHAT';
+$data   = 'SLOWLYDESPARATLYSLOWLY' .
+          '?';
 
 $options = array(
     'key' => 'KRYPTOS',
-    'pad-size' => 16,
+    'pad-size' => 86,
 );
 
 KryptosTranspositionCipher::setDebug(true);

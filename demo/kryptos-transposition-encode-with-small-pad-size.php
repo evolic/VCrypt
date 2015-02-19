@@ -7,7 +7,8 @@ use VCrypt\Cipher\KryptosTranspositionCipher;
 $firephp = \FirePHP::getInstance(true);
 $firephp->info('FirePHP is on');
 
-$data   = 'SLOWLYDESPARATLYSLOWLYTHEREMAINSOFPASSAGEDEBRISTHAT';
+$data   = 'SLOWLYDESPARATLYSLOWLY' .
+          '?';
 
 $options = array(
     'key' => 'KRYPTOS',
@@ -21,5 +22,15 @@ echo '<br>' . PHP_EOL;
 echo '<br>' . PHP_EOL;
 
 echo '<pre>' . PHP_EOL;
-echo $cipher->encode($data);
+echo $encoded = $cipher->encode($data);
 echo '</pre>' . PHP_EOL;
+
+echo '<pre>' . PHP_EOL;
+echo $decoded = $cipher->decode($encoded);
+echo '</pre>' . PHP_EOL;
+
+if ($decoded === $data) {
+    echo 'Text successfully decoded' . PHP_EOL;
+} else {
+    echo 'Text unsuccessfully decoded' . PHP_EOL;
+}

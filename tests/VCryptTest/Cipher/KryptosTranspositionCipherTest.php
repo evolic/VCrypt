@@ -23,6 +23,12 @@ use VCrypt\Common\Output;
  */
 class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        KryptosTranspositionCipher::setDebug(false);
+    }
+
+
     public function testStringBackward()
     {
         $originalText = 'KRYPTOS';
@@ -347,6 +353,10 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
                 'IEWFEBAECTDDHILCEIHSITEGOEAOSDDRYDLORITRKLMLEHA' .
                 'GTDHARDPNEOHMGFMFEUHEECDMRIPFEIMEHNLSSTTRTVDOHW'
             ),
+            array(
+                'SLOWLYDESPARATLYSLOWLY?',
+                '?YSLLAWWAYYLESSPOORLLTD'
+            ),
         );
     }
 
@@ -355,9 +365,6 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
      */
     public function testEncryption($source, $encrypted)
     {
-        $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'encode');
-        $reflectionMethod->setAccessible(true);
-
         $options = array(
             'key' => 'KRYPTOS',
             'pad-size' => 86,
@@ -365,8 +372,50 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
 
         $cipher = new KryptosTranspositionCipher($options);
 
-        $output = $reflectionMethod->invokeArgs($cipher, array($source));
+        $output = $cipher->encode($source);
         $this->assertEquals($encrypted, $output);
+    }
+
+    /**
+     * @dataProvider provideEncryptionData
+     */
+    public function testDecryption($decrypted, $encrypted)
+    {
+        $options = array(
+            'key' => 'KRYPTOS',
+            'pad-size' => 86,
+        );
+
+        $cipher = new KryptosTranspositionCipher($options);
+
+        $output = $cipher->decode($encrypted);
+        $this->assertEquals($decrypted, $output);
+    }
+
+    public function provideCustomDecryptionData()
+    {
+        return array(
+            array(
+                'SLOWLYDESPARATLYSLOWLY?',
+                '?DYSLLAWWAYYLESSPOORLLT'
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider provideCustomDecryptionData
+     */
+    public function testCustomDecryption($decrypted, $encrypted)
+    {
+        $options = array(
+            'key' => 'KRYPTOS',
+            'pad-size' => 16,
+        );
+
+        $cipher = new KryptosTranspositionCipher($options);
+
+        $output = $cipher->decode($encrypted);
+        $this->assertEquals($decrypted, $output);
     }
 
 
@@ -389,9 +438,6 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
      */
     public function testThrowingExceptionForEncryptionWithNotPossibleDecryption($source, $encrypted)
     {
-        $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'encode');
-        $reflectionMethod->setAccessible(true);
-
         $options = array(
             'key' => 'KRYPTOS',
             'pad-size' => 17,
@@ -399,7 +445,7 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
 
         $cipher = new KryptosTranspositionCipher($options);
 
-        $output = $reflectionMethod->invokeArgs($cipher, array($source));
+        $output = $cipher->encode($source);
         $this->assertEquals($encrypted, $output);
     }
 
@@ -436,6 +482,14 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
             "  5 | SIRBEDE GASSAPF OS" . PHP_EOL,
             "  6 | NIAMERE HTYLWOL SY" . PHP_EOL,
             "  7 | LTARAPS EDYLWOL S" . PHP_EOL,
+            PHP_EOL,
+            "  1 | NIGALNH BHRMTTE IW" . PHP_EOL,
+            "  2 | DEOERMV SWYARAW OO" . PHP_EOL,
+            "  3 | DOTETFH RWRAOEP LE" . PHP_EOL,
+            "  4 | HEETBRD MTNUAEC HT" . PHP_EOL,
+            "  5 | SDBIEER GPSAFAS OS" . PHP_EOL,
+            "  6 | NRMIEEA HOLTLWY SY" . PHP_EOL,
+            "  7 | LPRTSAA EOLDLWY S" . PHP_EOL,
             PHP_EOL,
             "   1 | NIGA LNH" . PHP_EOL,
             "   2 | DEOE RMV" . PHP_EOL,
@@ -474,5 +528,55 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
 
         $output = $cipher->encode($source, $stub);
         $this->assertEquals($encrypted, $output);
+    }
+
+    public function provideEncryptionDataWhichNeedsAutoCorrection()
+    {
+        return array(
+            array(
+                'SLOWLYDESPARATLYSLOWLY',
+                'YLWOLSYLTARAOSEDYLWOLS',
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider provideEncryptionDataWhichNeedsAutoCorrection
+     * @expectedException VCrypt\Exception\InvalidPadSizeException
+     */
+    public function testEncryptionWithAutoCorrectionTurnedOff($source)
+    {
+        $options = array(
+            'key' => 'KRYPTOS',
+            'pad-size' => 16,
+        );
+
+        $cipher = new KryptosTranspositionCipher($options);
+
+        $output = $cipher->encode($source);
+    }
+
+    /**
+     * @dataProvider provideEncryptionDataWhichNeedsAutoCorrection
+     */
+    public function testEncryptionAndDecryptionWithAutoCorrectionTurnedOn($source)
+    {
+        $options = array(
+            'key' => 'KRYPTOS',
+            'pad-size' => 16,
+            'auto-correction' => true,
+        );
+
+        $cipher = new KryptosTranspositionCipher($options);
+
+        $encrypted = $cipher->encode($source);
+        $decrypted = $cipher->decode($encrypted);
+
+        $this->assertGreaterThan(0, $cipher->getAutoCorrectionCount(), 'Invalid number of times when auto-correction happened');
+
+        $correctedTextLength = mb_strlen($decrypted, 'utf-8');
+        $decrypted = mb_substr($decrypted, 0, $correctedTextLength - $cipher->getAutoCorrectionCount(), 'utf-8');
+
+        $this->assertEquals($source, $decrypted);
     }
 }

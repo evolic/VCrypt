@@ -298,6 +298,7 @@ class KryptosTranspositionCipher
         do {
             $row = mb_substr($text, $skip, $this->padSize, 'utf-8');
             $textInRows[] = $row;
+
             $skip += $this->padSize;
         } while ($skip < $textLength);
 
@@ -330,7 +331,7 @@ class KryptosTranspositionCipher
         }
 
         if (self::$debug && !is_null($this->output)) {
-            $this->output->printColumns($columns, $sliceSize, $this->output);
+            $this->output->printColumns($columns, $sliceSize);
         }
 
         return $columns;
@@ -346,11 +347,32 @@ class KryptosTranspositionCipher
     protected function transposeColumns($columns)
     {
         $transposedColumn = array();
+        // only for debugging
+        if (self::$debug && !is_null($this->output)) {
+            $transposedColumns = array();
+        }
 
         foreach ($columns as $column) {
-            foreach ($column as $row) {
-                $transposedColumn[] = $this->transpose($row);
+            if (self::$debug && !is_null($this->output)) {
+                $transposedRows = array();
             }
+
+            foreach ($column as $row) {
+                $transposedRow = $this->transpose($row);
+                $transposedColumn[] = $transposedRow;
+
+                if (self::$debug && !is_null($this->output)) {
+                    $transposedRows[] = implode('', $transposedRow);
+                }
+            }
+
+            if (self::$debug && !is_null($this->output)) {
+                $transposedColumns[] = $transposedRows;
+            }
+        }
+
+        if (self::$debug && !is_null($this->output)) {
+            $this->output->printColumns($transposedColumns, $this->keyLength);
         }
 
         if (self::$debug && !is_null($this->output)) {
@@ -555,10 +577,10 @@ class KryptosTranspositionCipher
         $reorderedRows           = $this->reorderColumns($splittedTextInRows);
 
         // chop rows into columns according to slice size
-        $sliceSize = (int) ceil($textLength / $this->padSize);
+        $rowsCount = (int) ceil($textLength / $this->padSize);
 
-        $rowsSlicedIntoColumns = $this->slicePad($reorderedRows, $sliceSize);
-        $invertedText          = $this->undoSlicePad($rowsSlicedIntoColumns, $sliceSize, $textLength);
+        $textPaddedInRows = $this->undoSlicePad($reorderedRows, $columns);
+        $invertedText     = $this->undoPadText($textPaddedInRows, $rowsCount);
 
         $decrypted             = $this->backward($invertedText);
 
@@ -566,39 +588,70 @@ class KryptosTranspositionCipher
     }
 
     /**
-     * Undo padding according slice size and text length from the rows sliced into columns
+     * Undoes padding according slice size and text length from the rows sliced into columns
      *
-     * @param unknown $rowsSlicedIntoColumns
-     * @param unknown $sliceSize
-     * @param unknown $textLength
-     * @return string
+     * @param array $rowsSlicedIntoColumns
+     * @param array $columns
+     * @return array
      */
-    protected function undoSlicePad($rowsSlicedIntoColumns, $sliceSize, $textLength)
+    protected function undoSlicePad($reorderedRows, $columns)
     {
-        $text = '';
+        $textPaddedInRows = array();
 
-        $slicesLengths = array();
+        $j = 0;
+        foreach ($columns as $column) {
+            $paddedColumn = array();
 
-        for ($i=0; $i<$sliceSize; $i++) {
-            foreach ($rowsSlicedIntoColumns as $slices) {
-                foreach ($slices as $row) {
-                    $rowLength = mb_strlen($row, 'utf-8');
+            for ($i=0; $i<count($column); $i++) {
+                $text = '';
 
-                    if ($i >= $rowLength) {
+                foreach ($reorderedRows as $reorderedRow) {
+                    // @todo Place for optimisation
+                    $rowLength = mb_strlen($reorderedRow, 'utf-8');
+
+                    if ($j >= $rowLength) {
                         $char = '';
                     } else {
-                        $char = mb_substr($row, $i, 1, 'utf-8');
+                        $char = mb_substr($reorderedRow, $j, 1, 'utf-8');
                     }
 
                     $text .= $char;
+                }
+
+                $paddedColumn[] = $text;
+
+                $j++;
+            }
+
+            $textPaddedInRows[] = $paddedColumn;
+        }
+
+        return $textPaddedInRows;
+    }
+
+    /**
+     * Undoes text padding
+     *
+     * @param array $textPaddedInRows
+     * @param int $rowsCount
+     * @return string
+     */
+    protected function undoPadText($textPaddedInRows, $rowsCount)
+    {
+        $text = '';
+
+        for ($i=0; $i<$rowsCount; $i++) {
+            foreach ($textPaddedInRows as $column) {
+                $columnLength = count($column);
+
+                if ($i < $columnLength) {
+                    $text .= $column[$i];
                 }
             }
         }
 
         return $text;
     }
-
-
 
     /**
      * Sets a secret key

@@ -7,12 +7,11 @@ use VCrypt\Cipher\KryptosTranspositionCipher;
 $firephp = \FirePHP::getInstance(true);
 $firephp->info('FirePHP is on');
 
-$data   = 'SLOWLYDESPARATLYSLOWLY'/*THEREMAINSOFPASSAGEDEBRISTHAT'*/;
+$data   = 'SLOWLYDESPARATLYSLOWLY?'/*THEREMAINSOFPASSAGEDEBRISTHAT'*/;
 
 $options = array(
     'key' => 'KRYPTOS',
     'pad-size' => 16,
-    'auto-correction' => true,
 );
 
 KryptosTranspositionCipher::setDebug(true);
@@ -37,11 +36,6 @@ echo '<pre>' . PHP_EOL;
 $decoded = $cipher->decode($encoded);
 echo '<strong>decoded: "' . $decoded . '"</strong>' . PHP_EOL;
 echo '</pre>' . PHP_EOL;
-
-if ($cipher->getAutoCorrectionCount()) {
-    $correctedTextLength = mb_strlen($decoded, 'utf-8');
-    $decoded = mb_substr($decoded, 0, $correctedTextLength - $cipher->getAutoCorrectionCount(), 'utf-8');
-}
 
 if ($decoded === $data) {
     echo 'Text successfully decoded' . PHP_EOL;
