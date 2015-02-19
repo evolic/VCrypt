@@ -72,11 +72,6 @@ class Output
      */
     public function printSingleColumn($transposedColumn, $charsInColumn = 4)
     {
-        if (self::$firephp) {
-            $firephp = \FirePHP::getInstance();
-            $firephp->info(__METHOD__);
-        }
-
         $lines  = count($transposedColumn);
         $log10  = log10($lines);
         $digits = ceil($log10);
@@ -123,29 +118,12 @@ class Output
      */
     public function printColumns($columns, $charsInColumn = 4)
     {
-        if (self::$firephp) {
-            $firephp = \FirePHP::getInstance();
-            $firephp->info(__METHOD__);
-        }
-
         $lines  = count($columns[0]);
-        if (self::$firephp) {
-            $firephp->info($lines, '$lines');
-        }
         $log10  = log10($lines);
-        if (self::$firephp) {
-            $firephp->info($log10, '$log10');
-        }
         $digits = ceil($log10);
-        if (self::$firephp) {
-            $firephp->info($digits, '$digits');
-        }
 
         if ($log10 % 1 === 0) {
             $digits += 1;
-        }
-        if (self::$firephp) {
-            $firephp->info($digits, '$digits');
         }
 
         for ($i=0; $i<$lines; $i++) {
