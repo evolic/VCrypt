@@ -29,19 +29,19 @@ In the project there were used:
 
 ### Running Coding Style Fixer
 
-# Display differences
+1. Display differences
 
 ```shell
 $
 ```
 
-# Show summarized information
+2. Show summarized information
 
 ```shell
 $
 ```
 
-# Fix detected problems
+3. Fix detected problems
 
 ```shell
 $
@@ -50,13 +50,13 @@ $
 
 ### Unit testing
 
-# Running unit tests
+1. Running unit tests
 
 ```shell
 $ php ./tests/run-tests.php
 ```
 
-# Generating code coverage metrics
+2. Generating code coverage metrics
 
 ```shell
 $ php ./tests/run-tests.php -h ../build/coverage
