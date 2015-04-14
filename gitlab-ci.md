@@ -1,10 +1,13 @@
 GitLab CI job
 
 ```shell
+curl -sS https://getcomposer.org/installer | php
+php composer.phar --version
+
 rm composer.lock
 
 sudo apt-get install parallel
-composer install --dev --prefer-source
+php composer.phar install --dev --prefer-source
 
 mkdir -p build/coverage
 
