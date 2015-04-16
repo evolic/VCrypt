@@ -123,7 +123,7 @@
   <exec executable="${toolsdir}phpmd">
    <arg path="${basedir}/library" />
    <arg value="xml" />
-   <arg path="${basedir}/build/phpmd.xml" />
+   <arg path="${basedir}/phpmd.xml" />
    <arg value="--reportfile" />
    <arg path="${basedir}/build/logs/pmd.xml" />
   </exec>
