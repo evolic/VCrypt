@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="vcrypt" default="build">
  <!-- By default, we assume all tools to be on the $PATH -->
- <property name="toolsdir" value="${basedir}/vendor/bin"/>
+ <property name="toolsdir" value="${basedir}/vendor/bin/"/>
 
  <!-- Uncomment the following when the tools are in ${basedir}/vendor/bin -->
  <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
@@ -34,6 +34,7 @@
   <delete dir="${basedir}/build/logs"/>
   <delete dir="${basedir}/build/pdepend"/>
   <delete dir="${basedir}/build/phpdox"/>
+  <delete file="${basedir}/composer.lock"/>
   <property name="clean.done" value="true"/>
  </target>
 
@@ -51,9 +52,10 @@
 
  <target name="composer"
          description="Download all vendor libraries of the project">
-  <exec executable="php" failonerror="true">
+  <exec executable="composer" failonerror="true">
+   <arg value="install"/>
+   <arg value=" --dev"/>
    <arg value="--prefer-dist"/>
-   <arg path="update"/>
   </exec>
  </target>
 
