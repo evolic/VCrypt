@@ -35,15 +35,15 @@
         "zendframework/zendframework" : ">=2.3"
     },
     "require-dev" : {
-        "sebastianbergmann/phpcov": "1.1.0",
+        "phpunit/phpunit": ">=4.3",
+        "sebastianbergmann/phpcov": ">=1.1.0",
         "fabpot/php-cs-fixer": "dev-master",
-        "squizlabs/php_codesniffer": "~1.5.*",
-        "phpmd/phpmd": "~2.1.*",
-        "sebastian/phpcpd": "~2.0.*",
-        "pdepend/pdepend": "~2.0.*",
-        "phploc/phploc": "~2.0.*",
-        "phpunit/phpunit": "~4.3.*",
-        "theseer/phpdox": "~0.7.*"
+        "squizlabs/php_codesniffer": ">=1.5",
+        "phpmd/phpmd": ">=2.1",
+        "sebastian/phpcpd": ">=2.0",
+        "pdepend/pdepend": ">=2.0",
+        "phploc/phploc": ">=2.0",
+        "theseer/phpdox": ">=0.7"
     },
     "autoload": {
         "psr-0": {
