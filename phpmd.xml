@@ -1,0 +1,9 @@
+<target name="phpmd-ci" description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
+  <exec executable="phpmd">
+    <arg path="library" />
+    <arg value="xml" />         
+    <arg value="codesize,unusedcode,naming,design" />
+    <arg value="--reportfile" />
+    <arg value="build/logs/pmd.xml" />
+   </exec>
+</target>
