@@ -170,22 +170,12 @@
   </exec>
  </target>
 
- <target name="phpunit-3.x"
+ <target name="phpunit"
          depends="prepare"
          description="Run unit tests with PHPUnit">
   <exec executable="${toolsdir}phpunit" failonerror="true">
    <arg value="--configuration"/>
    <arg path="${basedir}/build/phpunit.xml"/>
-  </exec>
- </target>
-
- <target name="phpunit"
-         depends="prepare"
-         description="Run unit tests with PHPUnit">
-  <exec executable="php" failonerror="true">
-   <arg path="${basedir}/tests/run-tests.php"/>
-   <arg value="--clover"/>
-   <arg path="${basedir}/build/logs/clover.xml"/>
   </exec>
  </target>
 
