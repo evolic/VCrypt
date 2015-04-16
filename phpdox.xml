@@ -1,5 +1,6 @@
-<phpdox xmlns="http://phpdox.de/config">
-    <project name="vcrypt" source="src" workdir="build/phpdox">
+<?xml version="1.0" encoding="utf-8" ?>
+<phpdox xmlns="http://xml.phpdox.net/config">
+    <project name="phpdox" source="library" workdir="build/phpdox">
         <collector publiconly="false">
             <include mask="*.php" />
             <exclude mask="**vendor/**"/>
