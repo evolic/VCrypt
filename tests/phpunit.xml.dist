@@ -4,14 +4,19 @@
             <directory>./VCryptTest</directory>
             <exclude>./VCryptTest/_files/</exclude>
             <exclude>./VCryptTest/report/</exclude>
-            <exclude>./../../vendor/</exclude>
-            <exclude>vendor/firephp/firephp-core/lib/FirePHPCore/FirePHP.class.php</exclude>
         </testsuite>
     </testsuites>
 
     <filter>
+        <whitelist>
+            <!-- add more directories -->
+            <exclude>
+                <!-- add more directories with relative or absolute path -->
+            </exclude>
+        </whitelist>
         <blacklist>
             <file>systemlib.phpreflection_hni</file>
+            <directory suffix=".php">../vendor/</directory>
         </blacklist>
     </filter>
 
