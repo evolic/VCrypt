@@ -53,8 +53,7 @@
  <target name="composer"
          description="Download all vendor libraries of the project">
   <exec executable="composer" failonerror="true">
-   <arg value="install"/>
-   <arg value=" --dev"/>
+   <arg value="update"/>
    <arg value="--prefer-dist"/>
   </exec>
  </target>
