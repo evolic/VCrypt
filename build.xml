@@ -175,7 +175,7 @@
          description="Run unit tests with PHPUnit">
   <exec executable="${toolsdir}phpunit" failonerror="true">
    <arg value="--configuration"/>
-   <arg path="${basedir}/tests/phpunit.xml"/>
+   <arg path="${basedir}/tests/phpunit.xml.dist"/>
   </exec>
  </target>
 
