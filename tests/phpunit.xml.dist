@@ -28,17 +28,11 @@
     </listeners>
 
     <logging>
-        <log
-            type="coverage-html"
-            target="build/coverage"
-            charset="UTF-8"
-            yui="true"
-            highlight="true"
-            lowUpperBound="35"
-            highLowerBound="70"
-            showUncoveredFiles="true"
-            />
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
+        <log type="coverage-html" target="../build/coverage" title="VCrypt"
+             charset="UTF-8" yui="true" highlight="true"
+             lowUpperBound="35" highLowerBound="70"/>
+        <log type="coverage-clover" target="../build/logs/clover.xml"/>
+        <log type="junit" target="../build/logs/junit.xml" logIncompleteSkipped="false"/>
     </logging>
 
     <php>
