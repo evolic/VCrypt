@@ -183,7 +183,7 @@
          depends="prepare"
          description="Run unit tests with PHPUnit">
   <exec executable="php" failonerror="true">
-   <arg path="tests/run-tests.php"/>
+   <arg path="${basedir}/tests/run-tests.php"/>
    <arg value="--clover"/>
    <arg path="${basedir}/build/logs/clover.xml"/>
   </exec>
