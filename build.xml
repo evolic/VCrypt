@@ -169,7 +169,7 @@
    <arg value="--log"/>
    <arg path="${basedir}/build/logs/"/>
    <arg value="--output"/>
-   <arg path="${basedir}/code-browser/"/>
+   <arg path="${basedir}/build/code-browser/"/>
    <arg value="--source"/>
    <arg path="${basedir}/library/"/>
   </exec>
