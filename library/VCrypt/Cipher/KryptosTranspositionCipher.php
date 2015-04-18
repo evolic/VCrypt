@@ -11,7 +11,6 @@
 
 namespace VCrypt\Cipher;
 
-
 use VCrypt\Common\Output;
 use VCrypt\Exception\InvalidTranspositionSourceTextException;
 use VCrypt\Exception\InvalidUndoTranspositionException;
@@ -401,7 +400,8 @@ class KryptosTranspositionCipher
                 if (!$this->paddingSimulation) {
                     throw new InvalidPadSizeException(
                         sprintf(
-                            'Specified pad size: %d is not valid for specified text (rows: %d and %d). Decryption won\'t be possible. Try to decrease or increase pad size!',
+                            'Specified pad size: %d is not valid for specified text (rows: %d and %d).' .
+                            'Decryption won\'t be possible. Try to decrease or increase pad size!',
                             $this->padSize,
                             $idx - 1,
                             $idx

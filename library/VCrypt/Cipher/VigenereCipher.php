@@ -10,7 +10,6 @@
 
 namespace VCrypt\Cipher;
 
-
 use VCrypt\Exception\EncryptedAndDecryptedTextLengthMismatchException;
 
 /**
