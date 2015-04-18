@@ -2,7 +2,7 @@
 <phpdox xmlns="http://xml.phpdox.net/config">
     <project name="phpdox" source="../library" workdir="../build/phpdox">
         <collector publiconly="false">
-            <include mask="*.php" />
+            <include mask="../**/*.php" />
             <exclude mask="../vendor/**"/>
             <exclude mask="*Autoload.php" />
         </collector>
