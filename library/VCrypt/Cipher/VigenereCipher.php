@@ -147,7 +147,7 @@ class VigenereCipher
      */
     public function setKey($key)
     {
-        if ($this->getCaseSensitive()) {
+        if ($this->isCaseSensitive()) {
             $this->key = $key;
         } else {
             $this->key = mb_strtoupper($key, 'utf-8');
@@ -177,7 +177,7 @@ class VigenereCipher
      *
      * @return bool
      */
-    public function getCaseSensitive()
+    public function isCaseSensitive()
     {
         return $this->caseSensitive;
     }
@@ -203,7 +203,7 @@ class VigenereCipher
         for ($i=0; $i<mb_strlen($text, 'utf-8'); $i++) {
             // $ch1 = $text[$i]
             $ch1 = mb_substr($text, $i, 1, 'utf-8');
-            if (!$this->getCaseSensitive()) {
+            if (!$this->isCaseSensitive()) {
                 $ch1 = mb_strtoupper($ch1, 'utf-8');
             }
 
@@ -212,7 +212,7 @@ class VigenereCipher
 
                 // $ch2 = $key[$j]
                 $ch2 = mb_substr($key, $j, 1, 'utf-8');
-                if (!$this->getCaseSensitive()) {
+                if (!$this->isCaseSensitive()) {
                     $ch2 = mb_strtoupper($ch2, 'utf-8');
                 }
 
@@ -222,7 +222,7 @@ class VigenereCipher
                 // $ch = $text[$i]
                 $ch = mb_substr($text, $i, 1, 'utf-8');
 
-                if ($this->getCaseSensitive()) {
+                if ($this->isCaseSensitive()) {
                     $encoded .= $ch;
                 } else {
                     $encoded .= mb_strtoupper($ch, 'utf-8');
@@ -265,17 +265,17 @@ class VigenereCipher
         $key = '';
 
         $limit = count($this->mapping) - 1;
-        $minus = -2;
         $up = 2;
         $offset = 0;
 
         // get reverse key
         for ($i=0; $i<$this->keyLength; $i++) {
-            // $kch = $this->key[$i]
             $kch = mb_substr($this->key, $i, 1, 'utf-8');
-            if (!$this->getCaseSensitive()) {
+
+            if (!$this->isCaseSensitive()) {
                 $kch = mb_strtoupper($kch, 'utf-8');
             }
+
             $pos = $this->mapping[$kch] + $offset;
             $nr = ($limit - $pos + $up) % $limit;
             $key .= $this->table[0][$nr];
@@ -294,7 +294,10 @@ class VigenereCipher
      */
     public function readKey($encrypted, $decrypted)
     {
-        if (($elen = mb_strlen($encrypted, 'utf-8')) !== ($dlen = mb_strlen($decrypted, 'utf-8'))) {
+        $encryptedLength = mb_strlen($encrypted, 'utf-8');
+        $decryptedLength = mb_strlen($decrypted, 'utf-8');
+
+        if ($encryptedLength !== $decryptedLength) {
             throw new EncryptedAndDecryptedTextLengthMismatchException(
                 'Texts cannot be processed because of strings length mismatch!',
                 self::EXCEPTION_CODE_STRINGS_LENGTH_MISMATCH
@@ -303,11 +306,11 @@ class VigenereCipher
 
         $key = '';
 
-        for ($i=0; $i<$elen; $i++) {
+        for ($i=0; $i<$encryptedLength; $i++) {
             $ech = mb_substr($encrypted, $i, 1, 'utf-8');
             $dch = mb_substr($decrypted, $i, 1, 'utf-8');
 
-            if (!$this->getCaseSensitive()) {
+            if (!$this->isCaseSensitive()) {
                 $ech = mb_strtoupper($ech, 'utf-8');
                 $dch = mb_strtoupper($dch, 'utf-8');
             }

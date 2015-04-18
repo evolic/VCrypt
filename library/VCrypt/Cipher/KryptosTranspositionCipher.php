@@ -241,7 +241,6 @@ class KryptosTranspositionCipher
      */
     protected function splitInputIntoRows($text, $transposedColumnLengths)
     {
-        $reversedColumnLengths = array();
         $columns = array();
         $textLength = mb_strlen($text, 'utf-8');
 
@@ -476,8 +475,6 @@ class KryptosTranspositionCipher
 
                     $encrypted        = $this->downward($transposedColumn);
 
-                    $decrypted        = $this->decode($encrypted);
-
                     return $encrypted;
                 } catch (InvalidPadSizeException $e) {
                     $char = mb_substr($source, mt_rand(0, $sourceLength), 1, 'utf-8');
@@ -502,14 +499,11 @@ class KryptosTranspositionCipher
      * Gets transposed column lengths
      * E.g. [51, 47, 47, 51, 47, 47, 47]
      *
-     * @param string $text
      * @param Output $output
      * @return string
      */
-    protected function getTransposedColumnLengths($text, $transposedColumn)
+    protected function getTransposedColumnLengths($transposedColumn)
     {
-        $textLength = mb_strlen($text, 'utf-8');
-
         if (!isset($this->key)) {
             throw new KeyNotSetException('You must set key first');
         }
@@ -572,7 +566,7 @@ class KryptosTranspositionCipher
             $this->output->printText(PHP_EOL . PHP_EOL);
         }
 
-        $transposedColumnLengths = $this->getTransposedColumnLengths($text, $transposedColumn);
+        $transposedColumnLengths = $this->getTransposedColumnLengths($transposedColumn);
         $splittedTextInRows      = $this->splitInputIntoRows($text, $transposedColumnLengths);
         $reorderedRows           = $this->reorderColumns($splittedTextInRows);
 

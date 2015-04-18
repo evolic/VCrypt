@@ -37,12 +37,12 @@ class Output
     {
         $idx = 0;
 
-        foreach ($tableau as $col => $rows) {
+        foreach ($tableau as $rows) {
             $line = '';
 
             $chars = -1;
 
-            foreach ($rows as $row => $char) {
+            foreach ($rows as $char) {
                 if ($chars === 0) {
                     $line .= ' |';
                 }
@@ -88,7 +88,7 @@ class Output
 
             $chars = 0;
 
-            foreach ($row as $columnNumber => $char) {
+            foreach ($row as $char) {
                 // convert empty chars into spaces
                 if ($char == '') {
                     $char = ' ';
@@ -114,9 +114,8 @@ class Output
      * Prints text divided into columns
      *
      * @param array $columns       Text divided into columns
-     * @param int   $charsInColumn Number of characters in the single column
      */
-    public function printColumns($columns, $charsInColumn = 4)
+    public function printColumns($columns)
     {
         $lines  = count($columns[0]);
         $log10  = log10($lines);
