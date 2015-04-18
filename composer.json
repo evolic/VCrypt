@@ -43,6 +43,7 @@
         "sebastian/phpcpd": ">=2.0",
         "pdepend/pdepend": ">=2.0",
         "phploc/phploc": ">=2.0",
+        "mayflower/php-codebrowser": ">=1.1",
         "theseer/phpdox": ">=0.7"
     },
     "autoload": {
