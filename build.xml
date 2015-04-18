@@ -7,11 +7,11 @@
  <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
 
  <target name="build"
-         depends="prepare,composer,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
+         depends="info,prepare,composer,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
          description=""/>
 
  <target name="build-parallel"
-         depends="prepare,composer,lint,tools-parallel,phpunit,phpdox"
+         depends="info,prepare,composer,lint,tools-parallel,phpunit,phpdox"
          description=""/>
 
  <target name="tools-parallel" description="Run tools in parallel">
@@ -48,6 +48,11 @@
   <mkdir dir="${basedir}/build/pdepend"/>
   <mkdir dir="${basedir}/build/phpdox"/>
   <property name="prepare.done" value="true"/>
+ </target>
+
+ <target name="info">
+  <echo>Hello World - Welcome to Apache Ant!</echo>
+  <echo>basedir: ${basedir}!</echo>
  </target>
 
  <target name="composer"
@@ -111,9 +116,11 @@
  <target name="phpmd"
          description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
   <exec executable="${toolsdir}phpmd">
-   <arg path="${basedir}/library" />
+   <arg value="${basedir}/library" />
    <arg value="text" />
-   <arg path="${basedir}/build/phpmd.xml" />
+   <arg value="${basedir}/phpmd.xml" />
+   <arg value="--reportfile" />
+   <arg value="${basedir}/build/logs/pmd.txt" />
   </exec>
  </target>
 
@@ -123,9 +130,9 @@
   <exec executable="${toolsdir}phpmd">
    <arg path="${basedir}/library" />
    <arg value="xml" />
-   <arg path="${basedir}/phpmd.xml" />
+   <arg value="${basedir}/phpmd.xml" />
    <arg value="--reportfile" />
-   <arg path="${basedir}/build/logs/pmd.xml" />
+   <arg value="${basedir}/build/logs/pmd.xml" />
   </exec>
  </target>
 
