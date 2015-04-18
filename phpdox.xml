@@ -9,7 +9,7 @@
 
         <generator output="../build">
             <build engine="html" enabled="true" output="api">
-                <file extension="xhtml" />
+                <file extension="html" />
             </build>
         </generator>
     </project>
