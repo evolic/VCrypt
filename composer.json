@@ -31,8 +31,7 @@
         }
     }],
     "require" : {
-        "php" : ">=5.3.23",
-        "zendframework/zendframework" : ">=2.3"
+        "php" : ">=5.3.23"
     },
     "require-dev" : {
         "phpunit/phpunit": ">=4.3",
@@ -44,11 +43,17 @@
         "pdepend/pdepend": ">=2.0",
         "phploc/phploc": ">=2.0",
         "mayflower/php-codebrowser": ">=1.1",
-        "theseer/phpdox": ">=0.7"
+        "theseer/phpdox": ">=0.7",
+        "firephp/firephp-core" : "dev-master"
     },
     "autoload": {
-        "psr-0": {
-            "VCrypt\\": "library/"
+        "psr-4": {
+            "VCrypt\\": "library/VCrypt"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "VCryptTest\\": "tests/VCryptTest"
         }
     },
     "extra": {
