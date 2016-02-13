@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../tests/_autoload.php';
 
 use VCrypt\Cipher\VigenereCipher;
+use VCrypt\Common\Output;
 
 $firephp = \FirePHP::getInstance(true);
 $firephp->info('FirePHP is on');
@@ -32,13 +33,18 @@ $cipher->setCaseSensitive(true);
 $cipher->setKey($key);
 $cipher->loadTable($table);
 
+$reflectionProperty  = new \ReflectionProperty('VCrypt\Cipher\VigenereCipher', 'table');
+$reflectionProperty->setAccessible(true);
+
+$outputDebugger = new Output();
+
 $encoded = $cipher->encode($data);
 
 echo '<br>' . PHP_EOL;
 echo '<br>' . PHP_EOL;
 
 echo '<pre>' . PHP_EOL;
-$cipher->printTable();
+$outputDebugger->printTableau($reflectionProperty->getValue($cipher), 4); // prints lines with Vigenere table
 echo '</pre>' . PHP_EOL;
 
 echo '<br>' . PHP_EOL;

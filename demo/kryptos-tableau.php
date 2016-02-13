@@ -22,11 +22,11 @@ $cipher->loadTable($table);
 $reflectionProperty  = new \ReflectionProperty('VCrypt\Cipher\VigenereCipher', 'table');
 $reflectionProperty->setAccessible(true);
 
-$output = new Output();
+$outputDebugger = new Output();
 
 echo '<br>' . PHP_EOL;
 echo '<br>' . PHP_EOL;
 
 echo '<pre>' . PHP_EOL;
-$output->printTableau($reflectionProperty->getValue($cipher), 4); // prints lines with Vigenere table
+$outputDebugger->printTableau($reflectionProperty->getValue($cipher), 4); // prints lines with Vigenere table
 echo '</pre>' . PHP_EOL;
