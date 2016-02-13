@@ -11,6 +11,11 @@
     "license" : [
         "BSD-3-Clause"
     ],
+    "config": {
+        "github-oauth": {
+            "github.com": "6e16d19c63a2178da5182aff6b6b567833ef2099"
+        }
+    },
     "repositories": [{
         "type": "package",
         "package": {
