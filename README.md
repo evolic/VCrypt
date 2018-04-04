@@ -3,7 +3,7 @@
 The library provides tools, which allows to generate Vigenère table, encode and decode text.
 
 Master:
-[![Build Status](http://umaroth-amd64:5080/job/VCrypt/badge/icon)](http://umaroth-amd64:5080/job/VCrypt/)
+[![Build Status](https://secure.travis-ci.org/evolic/VCrypt.png?branch=master)](http://travis-ci.org/evolic/VCrypt)
 [![Coverage Status](https://coveralls.io/repos/evolic/VCrypt/badge.png?branch=master)](https://coveralls.io/r/evolic/VCrypt)
 
 ## About the project
