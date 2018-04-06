@@ -11,7 +11,9 @@
 namespace VCryptTest\Cipher;
 
 use VCrypt\Cipher\KryptosTranspositionCipher;
+use VCrypt\Cipher\KryptosTranspositionCipherDebugger;
 use VCrypt\Common\Output;
+use VCrypt\Exception\InvalidPadSizeException;
 
 
 /**
@@ -25,7 +27,6 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        KryptosTranspositionCipher::setDebug(false);
     }
 
 
@@ -34,7 +35,7 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
         $originalText = 'KRYPTOS';
         $backwardText = 'SOTPYRK';
 
-        $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'backward');
+        $reflectionMethod  = new \ReflectionMethod(KryptosTranspositionCipher::class, 'backward');
         $reflectionMethod->setAccessible(true);
 
         $cipher = new KryptosTranspositionCipher();
@@ -58,7 +59,7 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
      */
     public function testTextTransposition($source, $transposed)
     {
-        $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'transpose');
+        $reflectionMethod  = new \ReflectionMethod(KryptosTranspositionCipher::class, 'transpose');
         $reflectionMethod->setAccessible(true);
 
         $cipher = new KryptosTranspositionCipher();
@@ -70,11 +71,11 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideTextTranspositionData
-     * @expectedException VCrypt\Exception\KeyNotSetException
+     * @expectedException \VCrypt\Exception\KeyNotSetException
      */
     public function testThrowingExceptionForTextTranspositionWithoutSettingTheKey($source, $transposed)
     {
-        $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'transpose');
+        $reflectionMethod  = new \ReflectionMethod(KryptosTranspositionCipher::class, 'transpose');
         $reflectionMethod->setAccessible(true);
 
         $cipher = new KryptosTranspositionCipher();
@@ -91,11 +92,11 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideTextTranspositionWithTooLongData
-     * @expectedException VCrypt\Exception\InvalidTranspositionSourceTextException
+     * @expectedException \VCrypt\Exception\InvalidTranspositionSourceTextException
      */
     public function testThrowingExceptionForTextTranspositionWithTooLongData($source, $transposed)
     {
-        $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'transpose');
+        $reflectionMethod  = new \ReflectionMethod(KryptosTranspositionCipher::class, 'transpose');
         $reflectionMethod->setAccessible(true);
 
         $cipher = new KryptosTranspositionCipher();
@@ -125,7 +126,7 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
      */
     public function testTextPadding($source, $padded)
     {
-      $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'padText');
+      $reflectionMethod  = new \ReflectionMethod(KryptosTranspositionCipher::class, 'padText');
       $reflectionMethod->setAccessible(true);
 
       $cipher = new KryptosTranspositionCipher();
@@ -234,7 +235,7 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
      */
     public function testTextSlicing($textInRows, $columns)
     {
-        $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'slicePad');
+        $reflectionMethod  = new \ReflectionMethod(KryptosTranspositionCipher::class, 'slicePad');
         $reflectionMethod->setAccessible(true);
 
         $key = 'KRYPTOS';
@@ -286,7 +287,7 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
      */
     public function testColumnTransposition($columns, $encrypted)
     {
-        $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'transposeColumns');
+        $reflectionMethod  = new \ReflectionMethod(KryptosTranspositionCipher::class, 'transposeColumns');
         $reflectionMethod->setAccessible(true);
 
         $cipher = new KryptosTranspositionCipher();
@@ -323,7 +324,7 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
      */
     public function testColumnDownwardn($column, $text)
     {
-        $reflectionMethod  = new \ReflectionMethod('VCrypt\Cipher\KryptosTranspositionCipher', 'downward');
+        $reflectionMethod  = new \ReflectionMethod(KryptosTranspositionCipher::class, 'downward');
         $reflectionMethod->setAccessible(true);
 
         $cipher = new KryptosTranspositionCipher();
@@ -434,7 +435,7 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideEncryptionWithNotPossibleDecryptionData
-     * @expectedException VCrypt\Exception\InvalidPadSizeException
+     * @expectedException \VCrypt\Exception\InvalidPadSizeException
      */
     public function testThrowingExceptionForEncryptionWithNotPossibleDecryption($source, $encrypted)
     {
@@ -468,7 +469,10 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
      */
     public function testDebuggingEncryption($source, $encrypted)
     {
-        $stub = $this->getMock('VCrypt\Common\Output', array('printText'));
+        $stub = $this->getMockBuilder(Output::class)
+            ->setMethods(['printText'])
+            ->getMock()
+        ;
 
         $table = array(
             "0 | ",
@@ -515,7 +519,7 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
         );
 
         foreach ($table as $idx => $line) {
-            $stub->expects( $this->at( $idx ) )->method('printText')->with( $line );
+            $stub->expects($this->at($idx))->method('printText')->with($line);
         }
 
         $options = array(
@@ -523,11 +527,83 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
             'pad-size' => 16,
         );
 
-        KryptosTranspositionCipher::setDebug(true);
-        $cipher = new KryptosTranspositionCipher($options);
+        $cipher = new KryptosTranspositionCipherDebugger($options, $stub);
 
-        $output = $cipher->encode($source, $stub);
+        $output = $cipher->encode($source);
         $this->assertEquals($encrypted, $output);
+    }
+
+    /**
+     * @dataProvider provideDebuggingEncryptionData
+     */
+    public function testDebuggingDecryption($source, $encrypted)
+    {
+        $stub = $this->getMockBuilder(Output::class)
+            ->setMethods(['printText'])
+            ->getMock()
+        ;
+
+        $table = array(
+            "0 | Started padding and transposing simulation",
+            PHP_EOL . PHP_EOL,
+            '  1 | NDDHSNL BSRMGHE IO' . PHP_EOL,
+            '  2 | LHOSSIE OEDRPHW WT' . PHP_EOL,
+            '  3 | POOGOTE BMRRYRN SL' . PHP_EOL,
+            '  4 | LAEETII TMAAUAT DW' . PHP_EOL,
+            '  5 | OETSYLR TBEESTR OA' . PHP_EOL,
+            '  6 | FLLNMFR EEATAEE AW' . PHP_EOL,
+            '  7 | WHVHDRA AEWPCSY Y' . PHP_EOL,
+            PHP_EOL,
+            "  1 | NNHDLSD BHMSEGR IO" . PHP_EOL,
+            "  2 | LISHESO OHREWPD WT" . PHP_EOL,
+            "  3 | PTGOEOO BRRMNYR SL" . PHP_EOL,
+            "  4 | LIEAITE TAAMTUA DW" . PHP_EOL,
+            "  5 | OLSERYT TTEBRSE OA" . PHP_EOL,
+            "  6 | FFNLRML EETEEAA AW" . PHP_EOL,
+            "  7 | WRHHADV ASPEYCW Y" . PHP_EOL,
+            PHP_EOL,
+            "   1 | NNHD LSD" . PHP_EOL,
+            "   2 | LISH ESO" . PHP_EOL,
+            "   3 | PTGO EOO" . PHP_EOL,
+            "   4 | LIEA ITE" . PHP_EOL,
+            "   5 | OLSE RYT" . PHP_EOL,
+            "   6 | FFNL RML" . PHP_EOL,
+            "   7 | WRHH ADV" . PHP_EOL,
+            "   8 | BHMS EGR" . PHP_EOL,
+            "   9 | OHRE WPD" . PHP_EOL,
+            "  10 | BRRM NYR" . PHP_EOL,
+            "  11 | TAAM TUA" . PHP_EOL,
+            "  12 | TTEB RSE" . PHP_EOL,
+            "  13 | EETE EAA" . PHP_EOL,
+            "  14 | ASPE YCW" . PHP_EOL,
+            "  15 | I  O    " . PHP_EOL,
+            "  16 | W  T    " . PHP_EOL,
+            "  17 | S  L    " . PHP_EOL,
+            "  18 | D  W    " . PHP_EOL,
+            "  19 | O  A    " . PHP_EOL,
+            "  20 | A  W    " . PHP_EOL,
+            "  21 | Y       " . PHP_EOL,
+            PHP_EOL,
+            "0 | Ended padding and transposing simulation",
+            PHP_EOL . PHP_EOL,
+            '0 | ',
+            'SLOWLYDESPARATLYSLOWLYTHEREMAINSOFPASSAGEDEBRISTHATENCUMBEREDTHELOWERPARTOFTHEDOORWAYWASREMOVEDWITHTREMBLINGHAN',
+            PHP_EOL . PHP_EOL,
+        );
+
+        foreach ($table as $idx => $line) {
+            $stub->expects($this->at($idx))->method('printText')->with($line);
+        }
+
+        $options = array(
+            'key' => 'KRYPTOS',
+            'pad-size' => 16,
+        );
+
+        $cipher = new KryptosTranspositionCipherDebugger($options, $stub);
+
+        $output = $cipher->decode($encrypted);
+        $this->assertEquals($source, $output);
     }
 
     public function provideEncryptionDataWhichNeedsAutoCorrection()
@@ -542,7 +618,7 @@ class KryptosTranspositionCipherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideEncryptionDataWhichNeedsAutoCorrection
-     * @expectedException VCrypt\Exception\InvalidPadSizeException
+     * @expectedException \VCrypt\Exception\InvalidPadSizeException
      */
     public function testEncryptionWithAutoCorrectionTurnedOff($source)
     {

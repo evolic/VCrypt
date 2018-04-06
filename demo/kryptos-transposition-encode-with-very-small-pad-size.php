@@ -4,9 +4,6 @@ require_once __DIR__ . '/../tests/_autoload.php';
 
 use VCrypt\Cipher\KryptosTranspositionCipher;
 
-$firephp = \FirePHP::getInstance(true);
-$firephp->info('FirePHP is on');
-
 $data   = 'SLOWLYDESPARATLYSLOWLY' .
           '?!@#';
 
@@ -15,7 +12,6 @@ $options = array(
     'pad-size' => 9,
 );
 
-KryptosTranspositionCipher::setDebug(true);
 $cipher = new KryptosTranspositionCipher($options);
 
 echo '<br>' . PHP_EOL;

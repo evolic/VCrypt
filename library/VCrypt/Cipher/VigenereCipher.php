@@ -16,7 +16,6 @@ use VCrypt\Exception\EncryptedAndDecryptedTextLengthMismatchException;
  * Vigenère cipher class
  *
  * @author     Tomasz Kuter <me@tomaszkuter.com>
- * @since      December 28, 2011
  * @copyright  (C) 2011-2014 Tomasz Kuter Loculus Evolution
  * @see http://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
  */
@@ -27,7 +26,7 @@ class VigenereCipher
      *
      * @var string
      */
-    const EXCEPTION_CODE_STRINGS_LENGTH_MISMATCH = '0001';
+    const EXCEPTION_CODE_STRINGS_LENGTH_MISMATCH = 1001;
 
 
     /**
@@ -358,7 +357,7 @@ class VigenereCipher
                 if ($keyLength === $stringLength && $key !== $string) {
                     $valid = false;
                     break;
-                } elseif ($keyLength !== $stringLength && mb_substr($key, 0, $stringLength, 'utf-8') !== $string) {
+                } else if ($keyLength !== $stringLength && mb_substr($key, 0, $stringLength, 'utf-8') !== $string) {
                     // last string can be shorter than the key
                     $valid = false;
                     break;

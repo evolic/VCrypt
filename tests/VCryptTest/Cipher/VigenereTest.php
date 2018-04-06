@@ -12,7 +12,7 @@ namespace VCryptTest\Cipher;
 
 use VCrypt\Cipher\VigenereCipher;
 use VCrypt\Common\Output;
-
+use VCrypt\Exception\EncryptedAndDecryptedTextLengthMismatchException;
 
 /**
  * @group      Vigenere
@@ -86,6 +86,9 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($key, $decodedKey);
     }
 
+    /**
+     *@expectedException \VCrypt\Exception\EncryptedAndDecryptedTextLengthMismatchException
+     */
     public function testPhrasesLengthMismatch()
     {
         $key = 'LEMON';
@@ -96,16 +99,15 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
         $decrypted = 'ATTACKATDAWNX';
         $encrypted = 'LXFOPVEFRNHR';
 
-        $this->setExpectedException(
-            'VCrypt\Exception\EncryptedAndDecryptedTextLengthMismatchException',
-            'Texts cannot be processed because of strings length mismatch!'
-        );
         $cipher->readKey($encrypted, $decrypted);
     }
 
-    public function testPrintTextingVigenereTable()
+    public function testPrintVigenereTable()
     {
-        $stub = $this->getMock('VCrypt\Common\Output', array('printText'));
+        $stub = $this->getMockBuilder('\VCrypt\Common\Output')
+            ->setMethods(['printText'])
+            ->getMock()
+        ;
 
         $table = array(
             "  | ABCD EFGH IJKL MNOP QRST UVWX YZ" . PHP_EOL,
@@ -138,7 +140,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
         );
 
         foreach ($table as $idx => $line) {
-            $stub->expects( $this->at( $idx ) )->method('printText')->with( $line );
+            $stub->expects($this->at($idx))->method('printText')->with($line);
         }
 
         $key = 'LEMON';
@@ -147,7 +149,7 @@ class VigenereTest extends \PHPUnit_Framework_TestCase
         $cipher  = new VigenereCipher($options);
         $cipher->loadTable($this->table);
 
-        $reflectionProperty  = new \ReflectionProperty('VCrypt\Cipher\VigenereCipher', 'table');
+        $reflectionProperty = new \ReflectionProperty(VigenereCipher::class, 'table');
         $reflectionProperty->setAccessible(true);
 
         $stub->printTableau($reflectionProperty->getValue($cipher), 4); // prints lines with Vigenere table

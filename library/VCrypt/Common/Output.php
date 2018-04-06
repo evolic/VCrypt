@@ -20,9 +20,6 @@ namespace VCrypt\Common;
  */
 class Output
 {
-    public static $firephp = false;
-
-
   /**
    * Prints Trithemius' tableau, known as the tabula recta
    * Function mostly for the debugging purpose

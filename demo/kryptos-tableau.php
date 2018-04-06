@@ -6,9 +6,6 @@ require_once __DIR__ . '/../tests/_autoload.php';
 use VCrypt\Cipher\VigenereCipher;
 use VCrypt\Common\Output;
 
-$firephp = \FirePHP::getInstance(true);
-$firephp->info('FirePHP is on');
-
 $table = __DIR__ . '/../tests/_files/tableau-kryptos.txt';
 
 $key    = 'fea42FEA4oDea45Bea4';

@@ -11,11 +11,6 @@
     "license" : [
         "BSD-3-Clause"
     ],
-    "config": {
-        "github-oauth": {
-            "github.com": "6e16d19c63a2178da5182aff6b6b567833ef2099"
-        }
-    },
     "repositories": [{
         "type": "package",
         "package": {
@@ -39,9 +34,9 @@
         "php" : ">=5.3.23"
     },
     "require-dev" : {
-        "phpunit/phpunit": ">=4.3",
+        "phpunit/phpunit": "^5.0",
         "sebastianbergmann/phpcov": ">=1.1.0",
-        "fabpot/php-cs-fixer": "dev-master",
+        "friendsofphp/php-cs-fixer": "dev-master",
         "squizlabs/php_codesniffer": ">=1.5",
         "phpmd/phpmd": ">=2.1",
         "sebastian/phpcpd": ">=2.0",

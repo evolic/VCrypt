@@ -20,7 +20,7 @@ before_script:
   - mkdir -p build/coverage
 
 script:
-  - vendor/bin/php-cs-fixer fix -v --dry-run --config-file ./.php_cs
+  - vendor/bin/php-cs-fixer fix -v --dry-run
   - php tests/run-tests.php --clover ../build/logs/clover.xml
 
 after_script:

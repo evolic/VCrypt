@@ -1,4 +1,14 @@
-<phpunit bootstrap="./Bootstrap.php" colors="true">
+<phpunit bootstrap="./Bootstrap.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         verbose="true"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="true">
     <testsuites>
         <testsuite name="Vigenère cipher Test Suite">
             <directory>./VCryptTest</directory>
@@ -8,10 +18,12 @@
     </testsuites>
 
     <filter>
-        <whitelist>
+        <whitelist processUncoveredFilesFromWhitelist="true">
             <!-- add more directories -->
+            <directory suffix=".php">../library/VCrypt</directory>
             <exclude>
                 <!-- add more directories with relative or absolute path -->
+                <directory>./tests/</directory>
             </exclude>
         </whitelist>
         <blacklist>
