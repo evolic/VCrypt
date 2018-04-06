@@ -419,7 +419,7 @@ class KryptosTranspositionCipher
 
                     return $encrypted;
                 } catch (InvalidPadSizeException $e) {
-                    $char = mb_substr($source, mt_rand(0, $sourceLength), 1, 'utf-8');
+                    $char = mb_substr($source, mt_rand(0, $sourceLength - 1), 1, 'utf-8');
                     $text .=  $char;
 
                     $this->autoCorrectionCount++;
@@ -427,7 +427,7 @@ class KryptosTranspositionCipher
                     $source = $text;
                     $sourceLength = mb_strlen($source, 'utf-8');
 
-                    $char = mb_substr($source, mt_rand(0, $sourceLength), 1, 'utf-8');
+                    $char = mb_substr($source, mt_rand(0, $sourceLength - 1), 1, 'utf-8');
                     $text .=  $char;
 
                     $this->autoCorrectionCount = 0;
@@ -646,5 +646,15 @@ class KryptosTranspositionCipher
     public function getAutoCorrectionCount()
     {
         return $this->autoCorrectionCount;
+    }
+
+    /**
+     * Returns number of failed decoding
+     *
+     * @return int counter
+     */
+    public function getFailedDecodingCount()
+    {
+        return $this->failedDecodingCount;
     }
 }
